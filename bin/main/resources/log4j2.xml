@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE XML>
+<Configuration status="INFO">
+	<Properties>
+		<Property name="log-path">logs</Property>
+	</Properties>
+	<Appenders>
+		<!-- <File name="file" fileName="${log-path}/app.log"> <PatternLayout> <Pattern>%d [%t] %-5level %c{1.}[%L] - %msg%n</Pattern> 
+			</PatternLayout> </File> -->
+		<RollingFile name="rootFile" fileName="${log-path}/root.log" filePattern="${log-path}/root-%d{yyyy-MM-dd}.log">
+			<PatternLayout>
+				<pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1}[%L] - %msg%n</pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1" modulate="true" />
+			</Policies>
+		</RollingFile>
+		<RollingFile name="appFile" fileName="${log-path}/app.log" filePattern="${log-path}/app-%d{yyyy-MM-dd}.log">
+			<PatternLayout>
+				<pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1}[%L] - %msg%n</pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1" modulate="true" />
+			</Policies>
+		</RollingFile>
+		<Console name="STDOUT" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d [%t] %-5level %c{1.}[%L] - %msg" />
+		</Console>
+	</Appenders>
+	<Loggers>
+		<logger name="com.med.ws.controller.workflow.master" level="debug" additivity="false">
+			<AppenderRef ref="rootFile" level="debug" />
+		</logger>
+		<logger name="com.med" level="debug" additivity="false">
+			<AppenderRef ref="appFile" level="debug" />
+		</logger>
+		
+		<Root level="debug">
+			<AppenderRef ref="rootFile" level="debug" />
+			<!-- <AppenderRef ref="STDOUT" level="INFO"/> -->
+		</Root>
+	</Loggers>
+</Configuration>

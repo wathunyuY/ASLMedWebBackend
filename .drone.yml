@@ -1,0 +1,41 @@
+pipeline:
+  build:
+    image: appleboy/drone-ssh
+    host: 203.131.209.132
+    user: root
+    port: 22
+    command_timeout: 120
+    password: csi@dmin
+    script:
+      - cd /root/do_deploy/MEDWebBackendDev
+      - git pull origin master
+      - mvn package
+
+      - /opt/wildfly/bin/jboss-cli.sh --user=root --password=csi@dmin --connect controller=127.0.0.1 --command="undeploy MEDWebService.war"
+      - /opt/wildfly/bin/jboss-cli.sh --user=root --password=csi@dmin  --connect controller=127.0.0.1 --command="deploy /root/do_deploy/MEDWebBackendDev/MEDWebService/target/MEDWebService.war"
+    when:
+      branch: master
+
+  build:
+    image: plugins/ssh
+    host: medswuservice.southeastasia.cloudapp.azure.com
+    user: drone
+    port: 22
+    command_timeout: 120
+    password: drone@dmin
+    script:
+      - cd /home/drone/do_deploy/MEDWebBackend
+      - git pull origin release/UAT
+      - mvn package
+      - mv /home/drone/do_deploy/MEDWebBackendDev/MEDWebService/target/MEDWebService.war /home/drone/do_deploy/MEDWebBackendDev/MEDWebService/target/MEDWebServiceMaster.war
+      - /opt/wildfly/bin/jboss-cli.sh --user=csiadmin --password=2Medswu@dmin --connect controller=127.0.0.1 --command="undeploy MEDWebServiceMaster.war"
+      - /opt/wildfly/bin/jboss-cli.sh --user=csiadmin --password=2Medswu@dmin --connect controller=127.0.0.1 --command="deploy /home/drone/do_deploy/MEDWebBackendDev/MEDWebService/target/MEDWebService.war"
+    when:
+      branch: release/UAT
+  slack:
+    image: plugins/slack
+    webhook: https://hooks.slack.com/services/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
+    channel: deploy_service
+    when:
+      status:  [ failure, success ]
+branches: [ master, release/UAT ]
