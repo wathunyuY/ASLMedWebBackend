@@ -10,23 +10,23 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class NotiSubscrPersonId implements java.io.Serializable {
 
-	private String subscrId;
+	private Integer subscrId;
 	private int persLoginDevice;
 
 	public NotiSubscrPersonId() {
 	}
 
-	public NotiSubscrPersonId(String subscrId, int persLoginDevice) {
+	public NotiSubscrPersonId(Integer subscrId, int persLoginDevice) {
 		this.subscrId = subscrId;
 		this.persLoginDevice = persLoginDevice;
 	}
 
 	@Column(name = "SUBSCR_ID", nullable = false)
-	public String getSubscrId() {
+	public Integer getSubscrId() {
 		return this.subscrId;
 	}
 
-	public void setSubscrId(String subscrId) {
+	public void setSubscrId(Integer subscrId) {
 		this.subscrId = subscrId;
 	}
 

@@ -12,12 +12,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.med.asl.ws.bean.ChatroomBean;
+import com.med.asl.ws.bean.MemberBean;
 import com.med.common.contants.Constants;
 import com.med.common.contants.ErrorConstants;
 import com.med.common.exception.MEDException;
+import com.med.ods.dao.NotiSubscrPersonDAO;
 import com.med.ods.dao.NotiSubscrTblDAO;
+import com.med.ods.dao.PersLoginDeviceDAO;
 import com.med.ods.dao.PersonDAO;
+import com.med.ods.entity.NotiSubscrPerson;
+import com.med.ods.entity.NotiSubscrPersonId;
 import com.med.ods.entity.NotiSubscrTbl;
+import com.med.ods.entity.PersLoginDevice;
+import com.med.ods.entity.Person;
+import com.med.ods.entity.PersonCurrent;
 
 @Service
 @Transactional
@@ -28,6 +36,10 @@ public class ChatService {
 	NotiSubscrTblDAO subscrTblDAO;
 	@Autowired
 	PersonDAO personDAO;
+	@Autowired
+	NotiSubscrPersonDAO subscrPersonDAO;
+	@Autowired
+	PersLoginDeviceDAO loginDeviceDAO;
 	
 	/**
 	 * Create Chatroom
@@ -48,10 +60,10 @@ public class ChatService {
 			tbl.setAllUserFlag(rq.getAllUserFlag() ? Constants.MSSQL.LOGIC.TRUE : Constants.MSSQL.LOGIC.FALSE);
 			tbl.setLastUpdOprid(oprid);
 			
-			if(rq.getAllUserFlag() && null != rq.getMembers()){
+			if(!rq.getAllUserFlag() && null != rq.getMembers()){
 				List<Integer> users = rq.getMembers();
 				if(0 < users.size()){
-					//FIXME addMember
+					this.addMembers(users, tbl.getSubscrId());
 					
 				}
 			}
@@ -68,22 +80,23 @@ public class ChatService {
 	public List<ChatroomBean> getChatroom(){
 		List<ChatroomBean> rs = new ArrayList<>();
 		try{
-			logger.info(personDAO.findByPK(1));
+			
 			List<NotiSubscrTbl> tbls = (List<NotiSubscrTbl>) subscrTblDAO.findAll();
 			if(0 < tbls.size()){
 				for(NotiSubscrTbl tbl : tbls){
 					if(Constants.MSSQL.LOGIC.TRUE == tbl.getIsActive()){
 						ChatroomBean b = new ChatroomBean();
 						b.setAllUserFlag(tbl.getAllUserFlag() == Constants.MSSQL.LOGIC.TRUE ? true:false);
-						b.setMembers(new ArrayList<>());
+						b.setMemberDetails(new ArrayList<>());
 						b.setSubscrId(tbl.getSubscrId());
 						b.setSubscrName(tbl.getSubscrName());
 						rs.add(b);
 					}
 				}
 			}
-		}catch(Exception ex){
 			
+		}catch(Exception ex){
+			logger.info(ex.getMessage());
 		}
 		return rs;
 		
@@ -100,14 +113,36 @@ public class ChatService {
 			ChatroomBean b = new ChatroomBean();
 			if(Constants.MSSQL.LOGIC.TRUE == tbl.getIsActive()){
 				b.setAllUserFlag(tbl.getAllUserFlag() == Constants.MSSQL.LOGIC.TRUE ? true:false);
-				b.setMembers(new ArrayList<>());
+				b.setMemberDetails(getMembersByChatroom(tbl.getSubscrId()));
+				b.setSubscrId(tbl.getSubscrId());
+				b.setSubscrName(tbl.getSubscrName());
+				return b;
+			}else return null; 
+				
+		}catch(Exception ex){
+			logger.info(ex.getMessage(),ex);
+			throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "Chatroom not found for id:"+ subscrId);
+		}
+	}
+	/**
+	 * Get chatroom by person
+	 * @author Wathunyu.y
+	 * @param persId
+	 */
+	public ChatroomBean getChatroomByPerson(Integer persId) throws MEDException{
+		try{
+			NotiSubscrTbl tbl =  subscrTblDAO.findByPK(persId);//FIXME wirte dao impl
+			ChatroomBean b = new ChatroomBean();
+			if(Constants.MSSQL.LOGIC.TRUE == tbl.getIsActive()){
+				b.setAllUserFlag(tbl.getAllUserFlag() == Constants.MSSQL.LOGIC.TRUE ? true:false);
+				b.setMemberDetails(getMembersByChatroom(tbl.getSubscrId()));
 				b.setSubscrId(tbl.getSubscrId());
 				b.setSubscrName(tbl.getSubscrName());
 				return b;
 			}
 			return null;
 		}catch(Exception ex){
-			throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "Chatroom not found for id:"+ subscrId);
+			throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "Chatroom not found for id:"+ persId);
 		}
 	}
 	
@@ -133,7 +168,71 @@ public class ChatService {
 	/**
 	 * add member
 	 * @author Wathunyu.y
+	 * @throws Exception 
 	 * 
 	 */
+	public Integer addMembers(List<Integer> members ,Integer subscrId) throws Exception{
+		Date now = Calendar.getInstance().getTime();
+		for(Integer member :members){
+			List<PersLoginDevice> devi = loginDeviceDAO.findByPersId(member);
+			if(null != devi){
+				for(PersLoginDevice d : devi){
+					NotiSubscrPersonId npId = new NotiSubscrPersonId(subscrId, d.getPersLoginDevice());
+					NotiSubscrPerson np = new NotiSubscrPerson();
+					np.setLastUpdDttm(now);
+					np.setId(npId);
+					np.setStatus("");
+					subscrPersonDAO.merge(np);
+				}
+			}
+		}
+		return 0;
+	}
+	/**
+	 * delete member
+	 * @author Wathunyu.y
+	 * @param persId
+	 * @throws MEDException 
+	 */
+	public void deleteMemberByPerrId(Integer persId,Integer subscrId) throws MEDException{
+		List<PersLoginDevice> dev = loginDeviceDAO.findByPersId(persId);
+		try{
+			if(null != dev){
+				for(PersLoginDevice d : dev){
+					NotiSubscrPersonId id = new NotiSubscrPersonId(subscrId,d.getPersLoginDevice());
+					NotiSubscrPerson p = subscrPersonDAO.findByPK(id);
+					p.setStatus("remove");
+					subscrPersonDAO.merge(p);
+				}
+			}
+		}catch(Exception ex){
+			throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "Chatroom not found for persId:"+ persId);
+		}
+		
+	}
 	
+	/**
+	 * Get members by subscrId
+	 * @author Wathunyu.y
+	 * @param subscrId
+	 * @return 
+	 */
+	public List<MemberBean> getMembersByChatroom(Integer subscrId){
+		List<MemberBean> rs = new ArrayList<>();
+		try{
+			List<Person> members = subscrPersonDAO.findPersonBySubscrId(subscrId);
+			if(null != members){
+				for(Person m : members){
+					MemberBean b= new MemberBean();
+					PersonCurrent cur = m.getPersonCurrent();
+					b.setPersId(m.getPersId());
+					b.setFullName(cur.getPrefix() + cur.getFirstName() + " " + cur.getLastName());
+					rs.add(b);
+				}
+			}
+		}catch(Exception ex){
+			
+		}
+		return rs;
+	}
 }

@@ -11,8 +11,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
 import com.med.common.contants.ConfigMapHelper;
-import com.med.common.contants.ErrorConstants;
-import com.med.common.exception.MEDException;
 import com.med.ods.dao.PersLoginDeviceDAO;
 import com.med.ods.entity.PersLoginDevice;
 
@@ -55,5 +53,23 @@ public class PersLoginDeviceDAOImpl extends GenericDAOImpl<PersLoginDevice, Inte
 		}
 		return result;
 	}
+
+	@Override
+	public List<PersLoginDevice> findByPersId(Integer persId) {
+		List<PersLoginDevice> result = new ArrayList<>();
+//		ersLoginDevice result = new PersLoginDevice();
+		String hql = ConfigMapHelper.getConfigValue("SQL_CONSTANTS.FIND_PERS_DEVICE_BY_PERSON_ORDER_BY_LASTUPDTTM");
+		Query qr = entityManager.createQuery(hql);
+		try{
+			qr.setParameter("persId", persId);
+//			result = qr.getResultList();
+			result = qr.getResultList();
+		}catch (NoResultException no) {
+			return null;
+		}
+		return result;
+	}
+
+	
 	
 }

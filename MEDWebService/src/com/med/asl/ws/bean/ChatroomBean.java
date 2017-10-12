@@ -8,6 +8,13 @@ public class ChatroomBean {
 	private String type;
 	private String subscrName;
 	private List<Integer> members;
+	private List<MemberBean> memberDetails;
+	public List<MemberBean> getMemberDetails() {
+		return memberDetails;
+	}
+	public void setMemberDetails(List<MemberBean> memberDetails) {
+		this.memberDetails = memberDetails;
+	}
 	public Integer getSubscrId() {
 		return subscrId;
 	}
