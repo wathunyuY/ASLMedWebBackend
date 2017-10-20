@@ -11,14 +11,14 @@ import javax.persistence.Embeddable;
 public class NotiAttributeId implements java.io.Serializable {
 
 	private int notiId;
-	private String key;
+	private String keys;
 
 	public NotiAttributeId() {
 	}
 
-	public NotiAttributeId(int notiId, String key) {
+	public NotiAttributeId(int notiId, String keys) {
 		this.notiId = notiId;
-		this.key = key;
+		this.keys = keys;
 	}
 
 	@Column(name = "NOTI_ID", nullable = false)
@@ -30,13 +30,13 @@ public class NotiAttributeId implements java.io.Serializable {
 		this.notiId = notiId;
 	}
 
-	@Column(name = "[KEY]", nullable = false)
+	@Column(name = "KEYS", nullable = false)
 	public String getKey() {
-		return this.key;
+		return this.keys;
 	}
 
-	public void setKey(String key) {
-		this.key = key;
+	public void setKey(String keys) {
+		this.keys = keys;
 	}
 
 	public boolean equals(Object other) {

@@ -39,7 +39,7 @@ public class NotiAttribute implements java.io.Serializable {
 	@EmbeddedId
 
 	@AttributeOverrides({ @AttributeOverride(name = "notiId", column = @Column(name = "NOTI_ID", nullable = false)),
-			@AttributeOverride(name = "key", column = @Column(name = "[KEY]", nullable = false)) })
+			@AttributeOverride(name = "keys", column = @Column(name = "KEYS", nullable = false)) })
 	public NotiAttributeId getId() {
 		return this.id;
 	}
@@ -58,7 +58,7 @@ public class NotiAttribute implements java.io.Serializable {
 		this.notiPool = notiPool;
 	}
 
-	@Column(name = "[VALUE]")
+	@Column(name = "VALUE")
 	public String getValue() {
 		return this.value;
 	}

@@ -1,6 +1,7 @@
 package com.med.ods.dao.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.NoResultException;
@@ -82,11 +83,17 @@ public class NotiPoolDAOImpl extends GenericDAOImpl<NotiPool, Integer> implement
 	}
 
 	@Override
-	public List<NotiPool> findChatByTopic(String topic) {
+	public List<NotiPool> findChatByTopic(String topic,Date lastMassageDate) {
 		List<NotiPool> result = new ArrayList<>();
-		String hql = ConfigMapHelper.getConfigValue("SQL_CONSTANTS.FIND_NOTI_CHAT_POOL_BY_TOPIC");
+		String hql;
+		if(null == lastMassageDate)
+			hql = ConfigMapHelper.getConfigValue("SQL_CONSTANTS.FIND_NOTI_CHAT_POOL_BY_TOPIC");
+		else hql = ConfigMapHelper.getConfigValue("SQL_CONSTANTS.FIND_NOTI_CHAT_POOL_BY_TOPIC_AND_LAST_MASSAGE_DATE");
 		Query qr = entityManager.createQuery(hql);
 		qr.setParameter("topic", topic);
+		if(null != lastMassageDate)
+			qr.setParameter("lastMassageDate", lastMassageDate);
+//		qr.setMaxResults(20);
 		try{
 			result = qr.getResultList();
 		}catch (NoResultException no) {
@@ -95,4 +102,18 @@ public class NotiPoolDAOImpl extends GenericDAOImpl<NotiPool, Integer> implement
 		return result;
 	}
 
+	@Override
+	public NotiPool findLastChatByTopic(String topic) {
+		List<NotiPool> result = new ArrayList<>();
+		String hql = ConfigMapHelper.getConfigValue("SQL_CONSTANTS.FIND_LAST_NOTI_CHAT_POOL_BY_TOPIC");
+		Query qr = entityManager.createQuery(hql);
+		qr.setParameter("topic", topic);
+		try{
+			result = qr.getResultList();
+			return 0 < result.size() ? result.iterator().next() : null;
+		}catch (NoResultException no) {
+			return null;
+		}
+		
+	}
 }

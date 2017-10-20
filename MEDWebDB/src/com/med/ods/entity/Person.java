@@ -164,7 +164,7 @@ public class Person implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "LAST_UPD_DTTM", length = 19)
+	@Column(name = "LAST_UPD_DTTM", length = 23)
 	public Date getLastUpdDttm() {
 		return this.lastUpdDttm;
 	}

@@ -42,7 +42,7 @@ public class NotiLog implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "[READS]")
+	@Column(name = "READS")
 	public Boolean getRead() {
 		return this.reads;
 	}

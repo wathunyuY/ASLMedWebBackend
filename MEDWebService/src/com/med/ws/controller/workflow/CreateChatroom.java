@@ -18,7 +18,8 @@ public class CreateChatroom extends AbstractWorkflowController {
 	
 	@Override
 	public ResponseBody processTask(ProcessBean processBean) throws Exception {
-		service.createAndUpdateChatroom(processBean.getRequest().getChatroomBeanRqType(), Integer.parseInt(processBean.getOprid()));
+//		service.createAndUpdateChatroom(processBean.getRequest().getChatroomBeanRqType(), Integer.parseInt(processBean.getOprid()));
+		service.createAndUpdateChatroom(processBean.getRequest().getChatroomBeanRqType(), 1);
 		return null;
 	}
 

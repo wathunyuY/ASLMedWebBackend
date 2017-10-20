@@ -30,6 +30,7 @@ public class NotiSubscrTbl implements java.io.Serializable {
 	private Integer lastUpdOprid;
 	private String subscrName;
 	private Integer allUserFlag;
+	private String subscrDescr;
 	private Set<NotiUnsubscrTemp> notiUnsubscrTemps = new HashSet<NotiUnsubscrTemp>(0);
 	private Set<NotiSubscrPerson> notiSubscrPersons = new HashSet<NotiSubscrPerson>(0);
 
@@ -41,7 +42,7 @@ public class NotiSubscrTbl implements java.io.Serializable {
 	}
 
 	public NotiSubscrTbl(Integer subscrId, Integer isActive, String type, Date lastUpdDttm,
-			String subscrName,Integer allUserFlag,Integer lastUpdOprid,
+			String subscrName,Integer allUserFlag,Integer lastUpdOprid,String subscrDescr,
 			Set<NotiUnsubscrTemp> notiUnsubscrTemps, Set<NotiSubscrPerson> notiSubscrPersons) {
 		this.subscrId = subscrId;
 		this.isActive = isActive;
@@ -52,6 +53,7 @@ public class NotiSubscrTbl implements java.io.Serializable {
 		this.subscrName = subscrName;
 		this.allUserFlag = allUserFlag;
 		this.lastUpdOprid = lastUpdOprid;
+		this.subscrDescr = subscrDescr;
 	}
 
 	@Id
@@ -101,6 +103,14 @@ public class NotiSubscrTbl implements java.io.Serializable {
 
 	public void setSubscrName(String subscrName) {
 		this.subscrName = subscrName;
+	}
+	@Column(name = "SUBSCR_DESCR",length = 255)
+	public String getSubscrDescr() {
+		return subscrDescr;
+	}
+
+	public void setSubscrDescr(String subscrDescr) {
+		this.subscrDescr = subscrDescr;
 	}
 
 	@Column(name = "ALL_USER_FLAG")

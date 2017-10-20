@@ -17,6 +17,7 @@ public enum ErrorConstants {
 	SERVICE_NOT_FOUND("ERROR", 20002L, "Service not found in project [%s]"),
 	TASK_NOT_FOUND("ERROR", 20003L, "Task not found in database [%s]"),
 	PATH_NOT_FOUND("ERROR", 20004L, "This endpoint required path variable"),
+	ACCOUNT_DOES_NOT_EXISTS("ERROR",21007L,"Account does not exists"),
 	UNAUTHORIZED("ERROR", 20005L, "UNAUTHORIZED [%s]"),
 	INVALID_VERSION("ERROR", 20006L, "INVALID_VERSION [%s]"),
 

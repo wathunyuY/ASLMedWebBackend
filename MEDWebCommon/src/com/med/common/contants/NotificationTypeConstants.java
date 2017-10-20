@@ -12,7 +12,8 @@ public enum NotificationTypeConstants {
 	REPORT_REJECTED("RPRJ","REPORT_REJECT","reject report"),
 	SCHEDULE_TRANSFER("SCDMT", "MOVE SCHEDULE", "Application Form Incoming"),
 	ENROLL_REQUEST("ENRCS", "ENROLL REQUEST", ""),
-	APPLICATIONFORM("APPFM", "APPLICATIONFORM", "")
+	APPLICATIONFORM("APPFM", "APPLICATIONFORM", ""),
+	ANNOUNCEMENT("ANNCM", "ANNOUNCEMENT", "Announcement")
 	;
 	
 	private final String code;

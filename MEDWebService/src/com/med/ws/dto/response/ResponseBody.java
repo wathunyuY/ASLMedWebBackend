@@ -8,6 +8,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.med.asl.ws.bean.ChatroomBean;
+import com.med.asl.ws.bean.MemberBean;
+import com.med.asl.ws.bean.ResearchBean;
+import com.med.asl.ws.bean.ResearchCategoryBean;
+import com.med.asl.ws.bean.ResearchFilterBean;
 import com.med.ws.beans.AcadCampusBean;
 import com.med.ws.beans.AcadCarBean;
 import com.med.ws.beans.AcadDegrBean;
@@ -332,6 +336,11 @@ public class ResponseBody {
 	protected EvaStatisticRsType evaStatRsType;
 	protected ChatroomBean chatroomRsType;
 	protected List<ChatroomBean> chatroomRsTypes;
+	protected List<MemberBean> memberRstypes;
+	protected List<ResearchCategoryBean> researchCategoryRsTypes; 
+	protected ResearchBean researchRsType;
+	protected ResearchFilterBean researchFilterRsType;
+	protected List<ResearchBean> researchRsTypes;
 	
 	public PersonEvaluationDTO getPersonEvaluation() {
 		return personEvaluation;
@@ -1708,5 +1717,47 @@ public class ResponseBody {
 	public void setChatroomRsTypes(List<ChatroomBean> chatroomRsTypes) {
 		this.chatroomRsTypes = chatroomRsTypes;
 	}
+
+	public List<MemberBean> getMemberRstypes() {
+		return memberRstypes;
+	}
+
+	public void setMemberRstypes(List<MemberBean> memberRstypes) {
+		this.memberRstypes = memberRstypes;
+	}
+
+	public List<ResearchCategoryBean> getResearchCategoryRsTypes() {
+		return researchCategoryRsTypes;
+	}
+
+	public void setResearchCategoryRsTypes(List<ResearchCategoryBean> researchCategoryRsTypes) {
+		this.researchCategoryRsTypes = researchCategoryRsTypes;
+	}
+
+	public ResearchBean getResearchRsType() {
+		return researchRsType;
+	}
+
+	public void setResearchRsType(ResearchBean researchRsType) {
+		this.researchRsType = researchRsType;
+	}
+
+	public ResearchFilterBean getResearchFilterRsType() {
+		return researchFilterRsType;
+	}
+
+	public void setResearchFilterRsType(ResearchFilterBean researchFilterRsType) {
+		this.researchFilterRsType = researchFilterRsType;
+	}
+
+	public List<ResearchBean> getResearchRsTypes() {
+		return researchRsTypes;
+	}
+
+	public void setResearchRsTypes(List<ResearchBean> researchRsTypes) {
+		this.researchRsTypes = researchRsTypes;
+	}
+
+	
 
 }

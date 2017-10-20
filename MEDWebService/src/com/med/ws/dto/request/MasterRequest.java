@@ -11,6 +11,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.med.asl.ws.bean.ChatroomBean;
+import com.med.asl.ws.bean.ResearchBean;
+import com.med.asl.ws.bean.ResearchCategoryBean;
+import com.med.ods.criteria.bean.ResearchSearchRqType;
 import com.med.ws.beans.AcadCampusBean;
 import com.med.ws.beans.AcadCarBean;
 import com.med.ws.beans.AcadGroupBean;
@@ -217,7 +220,9 @@ public class MasterRequest {
 	protected EvaDTO createEvaRq;
 	protected EvaMappingRejectedRqType evaMappingRejectedRqType;
 	protected EvaInitRqType evaInitRqType;
-	
+	protected ResearchCategoryBean researchCategoryRqType;
+	protected ResearchBean researchRqtype;
+	protected ResearchSearchRqType researchSearchRqType;
 	protected ChatroomBean chatroomBeanRqType;
 	public ServiceUpdateRqType getServiceUpdateRq() {
 		return serviceUpdateRqType;
@@ -1052,6 +1057,30 @@ public class MasterRequest {
 
 	public void setChatroomBeanRqType(ChatroomBean chatroomBeanRqType) {
 		this.chatroomBeanRqType = chatroomBeanRqType;
+	}
+
+	public ResearchCategoryBean getResearchCategoryRqType() {
+		return researchCategoryRqType;
+	}
+
+	public void setResearchCategoryRqType(ResearchCategoryBean researchCategoryRqType) {
+		this.researchCategoryRqType = researchCategoryRqType;
+	}
+
+	public ResearchBean getResearchRqtype() {
+		return researchRqtype;
+	}
+
+	public void setResearchRqtype(ResearchBean researchRqtype) {
+		this.researchRqtype = researchRqtype;
+	}
+
+	public ResearchSearchRqType getResearchSearchRqType() {
+		return researchSearchRqType;
+	}
+
+	public void setResearchSearchRqType(ResearchSearchRqType researchSearchRqType) {
+		this.researchSearchRqType = researchSearchRqType;
 	}
 	
 	

@@ -3,6 +3,8 @@ package com.med.ws.controller.service;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -12,15 +14,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.med.common.contants.Constants;
 import com.med.ods.dao.TxnLogDAO;
 import com.med.ods.entity.TxnLog;
 import com.med.ws.controller.workflow.master.ProcessBean;
+import com.med.ws.dto.type.rs.LoginRsType;
 
 @Service
 @Transactional
 public class LogService {
 	@Autowired
 	TxnLogDAO txnLogDAO;
+	@Autowired
+	ASLService aslService;
 
 	public TxnLog initTxnLog(ProcessBean processBean) {
 		TxnLog txnLog = processBean.getTxnLog();
@@ -76,4 +82,5 @@ public class LogService {
 		}
 		txnLogDAO.persist(log);
 	}
+	
 }

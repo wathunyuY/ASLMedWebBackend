@@ -10,5 +10,7 @@ import com.med.ods.entity.PersonCurrent;
 public interface PersonDAO extends GenericDAO<Person, Serializable>{
 	
 	public List<PersonCurrent> findStdntByName(String name) throws MEDException;
+	public List<PersonCurrent> findStdntByKey(String key) throws MEDException;
+	public PersonCurrent findByAslUserId(String userId) throws MEDException;
 
 }

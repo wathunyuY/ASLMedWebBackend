@@ -135,6 +135,10 @@ public class DateUtils {
 	public static Date convertStringToDate(String date) throws ParseException {
 		return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").parse(date);
 	}
+	
+	public static Date convertStringToDatabaseFormatDate(String date) throws ParseException  {
+		return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date);
+	}
 
 	public static String convertDateToDateOnlyFormatString(Date date) {
 		return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date).split(" ")[0];
@@ -147,6 +151,18 @@ public class DateUtils {
 	public static long getDifferenceDays(Date d1, Date d2) {
 		long diff = d2.getTime() - d1.getTime();
 		return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+	}
+	
+	public static Date convertAStringToDate(String strDate) {
+	    String newPattern = "yyyy-MM-dd HH:mm:ss";
+	    SimpleDateFormat formatter = new SimpleDateFormat(newPattern);
+	    try {
+	        Date date = formatter.parse(strDate);
+	        return date;
+	    } catch (java.text.ParseException e) {
+	        e.printStackTrace();
+	    }
+	    return null;
 	}
 
 	public static boolean IsOverlap(Date startDateA, Date endDateA, Date startDateB, Date endDateB) {

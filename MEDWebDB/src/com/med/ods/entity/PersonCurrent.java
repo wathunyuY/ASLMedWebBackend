@@ -71,6 +71,7 @@ public class PersonCurrent implements java.io.Serializable {
 	private String lineId;
 	private Date lastUpdDttm;
 	private Integer lastUpdOprid;
+	private String aslUserId;
 
 	public PersonCurrent() {
 	}
@@ -91,7 +92,7 @@ public class PersonCurrent implements java.io.Serializable {
 			String erImmunizationDescr, String address1Type0, String zipcodeType0, String address1Type1,
 			String zipcodeType1, String address1Type2, String zipcodeType2, String emailAddress1, String emailAddress2,
 			String phoneNbr, String phoneExt, String mobileNbr1, String mobileNbr2, String mobileNbr3,
-			String mobileNbr4, String mobileNbr5, String lineId, Date lastUpdDttm, Integer lastUpdOprid) {
+			String mobileNbr4, String mobileNbr5, String lineId, Date lastUpdDttm, Integer lastUpdOprid,String aslUserId) {
 //		this.addrAmphurTblByAmphurIdType2 = addrAmphurTblByAmphurIdType2;
 //		this.addrAmphurTblByAmphurIdType0 = addrAmphurTblByAmphurIdType0;
 //		this.addrAmphurTblByAmphurIdType1 = addrAmphurTblByAmphurIdType1;
@@ -138,6 +139,7 @@ public class PersonCurrent implements java.io.Serializable {
 		this.lineId = lineId;
 		this.lastUpdDttm = lastUpdDttm;
 		this.lastUpdOprid = lastUpdOprid;
+		this.aslUserId = aslUserId;
 	}
 
 	@GenericGenerator(name = "generator", strategy = "foreign", parameters = @Parameter(name = "property", value = "person"))
@@ -583,4 +585,14 @@ public class PersonCurrent implements java.io.Serializable {
 	public void setLastUpdOprid(Integer lastUpdOprid) {
 		this.lastUpdOprid = lastUpdOprid;
 	}
+
+	@Column(name = "ASL_USER_ID")
+	public String getAslUserId() {
+		return aslUserId;
+	}
+
+	public void setAslUserId(String aslUserId) {
+		this.aslUserId = aslUserId;
+	}
+	
 }

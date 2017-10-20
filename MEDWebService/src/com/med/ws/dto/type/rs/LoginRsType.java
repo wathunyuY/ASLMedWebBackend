@@ -18,7 +18,7 @@ public class LoginRsType {
 	private Boolean typeEmp;
 	private String name;
 	private Boolean typeStdnt;
-
+	private String group;
 	public List<MenuBean> getMenuList() {
 		return menuList;
 	}
@@ -89,6 +89,14 @@ public class LoginRsType {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getGroup() {
+		return group;
+	}
+
+	public void setGroup(String group) {
+		this.group = group;
 	}
 
 

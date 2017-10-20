@@ -47,6 +47,8 @@ public class MasterParams {
 	private String acadCareer;
 	private String empCode;
 	private String scope;
+	private String active;
+	private String nickname;
 	
 	public String getDist() {
 		return dist;
@@ -394,4 +396,21 @@ public class MasterParams {
 	public void setScope(String scope) {
 		this.scope = scope;
 	}
+
+	public String getActive() {
+		return active;
+	}
+
+	public void setActive(String active) {
+		this.active = active;
+	}
+
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+	
 }

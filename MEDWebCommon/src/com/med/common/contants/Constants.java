@@ -141,8 +141,8 @@ public final class Constants {
 	}
 	
 	public final class FIREBASE{
-		public static final String WEB_API_KEY = "AIzaSyDnryOk8QK_7qMY2_Y3hJt8N-mQp7lApg0";
-		public static final String SERVER_KEY = "AAAAYitKSAw:APA91bGsRnWOGWG0CA2f4gpzbXBBD_hOtQatHE0vVND9p4lD9gG2-IhUl6VOXqatrt_5AXN927HGtiKCwpR2837AS9_JNyeSr1qyqNbEpmiUL22CDG7UMGFN-raYdVwkvkOZxqcAQgk0";
+		public static final String WEB_API_KEY = "AIzaSyAJ1piIzkBG78iAsfPF5LDBKcsT1wWxRuo";
+		public static final String SERVER_KEY = "AAAAWhCfIEI:APA91bGkLe3HJ-KC1ajveLQn08LM8ItMonw1S16qURh83FDnM5vxdx8SCDmclqJJhe6CVoOS_RnYU_5jWpIl91ku8m65H83bdMdum_cA2M6A6KeW3YB7kuq9JRSMM8bkjg8exAVYnV6-";
 		public static final String NOTI_ICO = "test";
 	}
 	
@@ -197,6 +197,18 @@ public final class Constants {
 		public final class LOGIC{
 			public static final int TRUE = 1;
 			public static final int FALSE = 0;
+		}
+	}
+	
+	public final class ASL_API{
+		public static final String URL = "https://api.aslsecurities.com:443/service.aspx";
+		public static final String ENCRYPE_KEY = "j0t5fTgOAy7$GaBG";
+		public static final String VECTORY_KEY = "tZo93cMAzEza5sk9";
+		public static final String TOKEN_KEY = "ZdEOXBBAAkY01X1zJjXsDMLi";
+		public static final String APP_ID = "ASLHome1";
+		
+		public final class SERVICE{
+			public static final String LOGIN = "CHKUSRPWD";
 		}
 	}
 	

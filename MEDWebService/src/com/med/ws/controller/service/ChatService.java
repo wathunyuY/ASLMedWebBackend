@@ -40,6 +40,10 @@ public class ChatService {
 	NotiSubscrPersonDAO subscrPersonDAO;
 	@Autowired
 	PersLoginDeviceDAO loginDeviceDAO;
+	@Autowired 
+	BroadcastService broadcastService;
+	@Autowired
+	ResearchService researchService;
 	
 	/**
 	 * Create Chatroom
@@ -57,7 +61,10 @@ public class ChatService {
 			tbl.setIsActive(Constants.MSSQL.LOGIC.TRUE);
 			tbl.setLastUpdDttm(now);
 			tbl.setSubscrName(rq.getSubscrName());
-			tbl.setAllUserFlag(rq.getAllUserFlag() ? Constants.MSSQL.LOGIC.TRUE : Constants.MSSQL.LOGIC.FALSE);
+			tbl.setSubscrDescr(rq.getSubscrDescr());
+			if(null != rq.getAllUserFlag())
+				tbl.setAllUserFlag(rq.getAllUserFlag() ? Constants.MSSQL.LOGIC.TRUE : Constants.MSSQL.LOGIC.FALSE);
+			else tbl.setAllUserFlag(Constants.MSSQL.LOGIC.FALSE);
 			tbl.setLastUpdOprid(oprid);
 			
 			if(!rq.getAllUserFlag() && null != rq.getMembers()){
@@ -80,7 +87,7 @@ public class ChatService {
 	public List<ChatroomBean> getChatroom(){
 		List<ChatroomBean> rs = new ArrayList<>();
 		try{
-			
+			researchService.getCategory();
 			List<NotiSubscrTbl> tbls = (List<NotiSubscrTbl>) subscrTblDAO.findAll();
 			if(0 < tbls.size()){
 				for(NotiSubscrTbl tbl : tbls){
@@ -90,6 +97,8 @@ public class ChatService {
 						b.setMemberDetails(new ArrayList<>());
 						b.setSubscrId(tbl.getSubscrId());
 						b.setSubscrName(tbl.getSubscrName());
+						b.setSubscrDescr(tbl.getSubscrDescr());
+						b.setLastMassage(broadcastService.findLastMassageByChatroom(tbl.getSubscrId(), 1));
 						rs.add(b);
 					}
 				}
@@ -116,6 +125,7 @@ public class ChatService {
 				b.setMemberDetails(getMembersByChatroom(tbl.getSubscrId()));
 				b.setSubscrId(tbl.getSubscrId());
 				b.setSubscrName(tbl.getSubscrName());
+				b.setSubscrDescr(tbl.getSubscrDescr());
 				return b;
 			}else return null; 
 				
@@ -125,22 +135,31 @@ public class ChatService {
 		}
 	}
 	/**
-	 * Get chatroom by person
+	 * Get chatroom by person (my room and public room)
 	 * @author Wathunyu.y
 	 * @param persId
 	 */
-	public ChatroomBean getChatroomByPerson(Integer persId) throws MEDException{
+	public List<ChatroomBean> getChatroomByPerson(Integer persId) throws MEDException{
 		try{
-			NotiSubscrTbl tbl =  subscrTblDAO.findByPK(persId);//FIXME wirte dao impl
-			ChatroomBean b = new ChatroomBean();
-			if(Constants.MSSQL.LOGIC.TRUE == tbl.getIsActive()){
-				b.setAllUserFlag(tbl.getAllUserFlag() == Constants.MSSQL.LOGIC.TRUE ? true:false);
-				b.setMemberDetails(getMembersByChatroom(tbl.getSubscrId()));
-				b.setSubscrId(tbl.getSubscrId());
-				b.setSubscrName(tbl.getSubscrName());
-				return b;
+			List<ChatroomBean> rs = new ArrayList<>();
+			List<NotiSubscrTbl> tbls =  subscrTblDAO.findByPersId(persId);//FIXME wirte dao impl
+			logger.info("1-1-1--1-");
+			if(null != tbls){
+				for(NotiSubscrTbl tbl : tbls){
+					ChatroomBean b = new ChatroomBean();
+					if(Constants.MSSQL.LOGIC.TRUE == tbl.getIsActive()){
+						b.setAllUserFlag(tbl.getAllUserFlag() == Constants.MSSQL.LOGIC.TRUE ? true:false);
+//						b.setMemberDetails(getMembersByChatroom(tbl.getSubscrId()));
+						b.setMemberDetails(new ArrayList<>());
+						b.setSubscrId(tbl.getSubscrId());
+						b.setSubscrName(tbl.getSubscrName());
+						b.setSubscrDescr(tbl.getSubscrDescr());
+						b.setLastMassage(broadcastService.findLastMassageByChatroom(tbl.getSubscrId(), 1));
+						rs.add(b);
+					}
+				}
 			}
-			return null;
+			return rs;
 		}catch(Exception ex){
 			throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "Chatroom not found for id:"+ persId);
 		}
@@ -173,6 +192,10 @@ public class ChatService {
 	 */
 	public Integer addMembers(List<Integer> members ,Integer subscrId) throws Exception{
 		Date now = Calendar.getInstance().getTime();
+		NotiSubscrTbl group = subscrTblDAO.findByPK(subscrId);
+		if(null == group) throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "Chatroom not found for id:"+ subscrId);
+		if(Constants.MSSQL.LOGIC.FALSE == group.getIsActive()) 	throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "Chatroom not active for id:"+ subscrId);
+
 		for(Integer member :members){
 			List<PersLoginDevice> devi = loginDeviceDAO.findByPersId(member);
 			if(null != devi){
