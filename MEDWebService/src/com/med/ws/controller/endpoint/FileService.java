@@ -2,9 +2,10 @@ package com.med.ws.controller.endpoint;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URLDecoder;
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
@@ -12,9 +13,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +41,6 @@ import com.med.common.exception.MEDException;
 import com.med.common.utils.DateUtils;
 import com.med.common.utils.JWTUtils;
 import com.med.ods.dao.ResearchTblDAO;
-import com.med.ods.entity.ResearchTbl;
 import com.med.ws.controller.service.ASLService;
 import com.med.ws.controller.service.ResearchService;
 import com.med.ws.controller.workflow.master.ProcessBean;
@@ -112,22 +113,21 @@ public class FileService {
 		}
 	}
 	
-	@RequestMapping(value="/getpdf", method=RequestMethod.POST)
-	public ResponseEntity<byte[]> getPDF(@RequestParam("research") List<String> research, HttpServletRequest request) throws NumberFormatException, MEDException {
-		ResearchTbl rs = researchTblDAO.findByPK(Integer.parseInt(research.get(0)));
-		ResearchBean rss = researchService.getResearch(Integer.parseInt(research.get(0)));
-		logger.info(research);
-	    // retrieve contents of "C:/tmp/report.pdf" that were written in showHelp
-	    byte[] contents = rs.getResearchHeader();
-	    HttpHeaders headers = new HttpHeaders();
-	    headers.setContentType(MediaType.parseMediaType("application/pdf"));
-	    String filename = "output.pdf";
-//	    URLDecoder.decode()
-	    String s = StringEscapeUtils.escapeHtml(rss.getResearchHeader());
-	    logger.info(s.getBytes());
-	    headers.setContentDispositionFormData(filename, filename);
-	    headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
-	    ResponseEntity<byte[]> response = new ResponseEntity<byte[]>(s.getBytes(), headers, HttpStatus.OK);
-	    return response;
+	@RequestMapping(value = "/download", method = RequestMethod.GET)
+	public @ResponseBody MasterResponse download(@RequestParam("fileName") String fileName, HttpServletRequest request, HttpServletResponse response) throws IOException {
+		File file = new File(fileName);
+		logger.debug(file.getAbsolutePath());
+		FileInputStream in = new FileInputStream(file);
+		byte[] content = new byte[(int) file.length()];
+		in.read(content);
+		ServletContext sc = request.getSession().getServletContext();
+		String mimetype = sc.getMimeType(file.getName());
+		response.reset();
+		response.setContentType(mimetype);
+		response.setContentLength(content.length);
+		response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
+		org.springframework.util.FileCopyUtils.copy(content, response.getOutputStream());
+		in.close();
+		return null;
 	}
 }

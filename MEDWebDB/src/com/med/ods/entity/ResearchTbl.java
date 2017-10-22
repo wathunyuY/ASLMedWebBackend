@@ -26,8 +26,8 @@ public class ResearchTbl implements java.io.Serializable {
 	private ResearchCategoryTbl researchCategoryTbl;
 	private String researchName;
 	private String researchSybol;
-	private byte[] researchDescr;
-	private byte[] researchHeader;
+	private String researchDescr;
+	private String researchHeader;
 	private Integer researchRecommendStat;
 	private String researchTragetPrice;
 	private String researchMarketPrice;
@@ -45,7 +45,7 @@ public class ResearchTbl implements java.io.Serializable {
 	}
 
 	public ResearchTbl(int researchId, ResearchCategoryTbl researchCategoryTbl, String researchName,
-			String researchSybol, byte[] researchDescr, Integer researchRecommendStat, String researchTragetPrice,
+			String researchSybol, String researchDescr, Integer researchRecommendStat, String researchTragetPrice,
 			String researchMarketPrice, Date researchCreateDate, String researchPicture, String researchAuthor,
 			Integer lastUpdOprid, Date lastUpdDttm) {
 		this.researchId = researchId;
@@ -103,20 +103,20 @@ public class ResearchTbl implements java.io.Serializable {
 	}
 
 	@Column(name = "RESEARCH_DESCR")
-	public byte[] getResearchDescr() {
+	public String getResearchDescr() {
 		return this.researchDescr;
 	}
 
-	public void setResearchDescr(byte[] researchDescr) {
+	public void setResearchDescr(String researchDescr) {
 		this.researchDescr = researchDescr;
 	}
 	
 	@Column(name = "RESEARCH_HEADER")
-	public byte[] getResearchHeader() {
+	public String getResearchHeader() {
 		return this.researchHeader;
 	}
 
-	public void setResearchHeader(byte[] researchHeader) {
+	public void setResearchHeader(String researchHeader) {
 		this.researchHeader = researchHeader;
 	}
 

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.med.asl.ws.bean.ResearchBean;
 import com.med.asl.ws.bean.ResearchCategoryBean;
@@ -128,10 +129,11 @@ public class ResearchService {
 				tbl.setResearchCreateDate(now);
 			
 			ObjectMapper mapper = new ObjectMapper();
-			byte[] descr = mapper.writeValueAsBytes(rq.getResearchDescr());
-			byte[] header = mapper.writeValueAsBytes(rq.getResearchHeader());
-			tbl.setResearchDescr(descr);
-			tbl.setResearchHeader(header);
+			
+//			byte[] descr = mapper.writeValueAsBytes(rq.getResearchDescr());
+//			byte[] header = mapper.writeValueAsBytes(rq.getResearchHeader());
+			tbl.setResearchDescr(rq.getResearchDescr());
+			tbl.setResearchHeader(rq.getResearchHeader());
 			tbl.setResearchName(rq.getResearchName());
 			tbl.setResearchSybol(rq.getResearchSymbol());
 			tbl = researchTblDAO.merge(tbl);
@@ -165,11 +167,13 @@ public class ResearchService {
 			rs.setResearchAuthor(tbl.getResearchAuthor());
 			rs.setResearchCreateDate(tbl.getResearchCreateDate());
 			
-			ObjectMapper mapper = new ObjectMapper();
-			String header = mapper.readValue(tbl.getResearchHeader(), String.class);
-			String descr = mapper.readValue(tbl.getResearchDescr(),String.class);
-			rs.setResearchHeader(header);
-			rs.setResearchDescr(descr);
+			
+//			ObjectMapper mapper = new ObjectMapper();
+//			mapper.configure(Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
+			if(null != tbl.getResearchHeader())
+				rs.setResearchHeader(tbl.getResearchHeader());
+			if(null != tbl.getResearchDescr())
+				rs.setResearchDescr(tbl.getResearchDescr());
 			rs.setResearchName(tbl.getResearchName());
 			rs.setResearchSymbol(tbl.getResearchSybol());
 			if(null != tbl.getResearchPicture() && !(Constants.SYMBOLIC.STRINGEMPTY.equals(tbl.getResearchPicture())))
