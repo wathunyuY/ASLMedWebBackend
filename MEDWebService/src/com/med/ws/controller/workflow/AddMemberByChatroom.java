@@ -25,7 +25,7 @@ public class AddMemberByChatroom extends AbstractWorkflowController {
 			List<Integer> persId = new ArrayList<>();
 			persId.add(Integer.parseInt(processBean.getParams().getPersId()));
 			service.addMembers(persId, Integer.parseInt(processBean.getPathVariable()));
-		}else throw new MEDException(ErrorConstants.MISSING_REQUIRED_FIELDS_PARAMS," 'subscrId' is missing");
+		}else throw new MEDException(ErrorConstants.MISSING_REQUIRED_FIELDS_PARAMS," subscrId is missing");
 		return null;
 	}
 

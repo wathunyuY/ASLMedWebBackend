@@ -26,8 +26,10 @@ import com.med.common.exception.MEDException;
 import com.med.ods.dao.NotiAttributeDAO;
 import com.med.ods.dao.NotiLogDAO;
 import com.med.ods.dao.NotiPoolDAO;
+import com.med.ods.dao.NotiSubscrTblDAO;
 import com.med.ods.dao.PersonDAO;
 import com.med.ods.entity.NotiPool;
+import com.med.ods.entity.NotiSubscrTbl;
 import com.med.ods.entity.Person;
 import com.med.ods.entity.PersonCurrent;
 import com.med.ws.beans.ChatMsgBean;
@@ -72,6 +74,8 @@ public class BroadcastService {
 	NotiAttributeDAO notiAttributeDAO;
 	@Autowired
 	PersonalService personalService;
+	@Autowired
+	NotiSubscrTblDAO notiSubscrTblDAO;
 
 	private ChatMsgBean buildChatMsgBean(NotiPool noti) {
 		try {
@@ -108,32 +112,11 @@ public class BroadcastService {
 		List<ChatMsgBean> result = new ArrayList<>();
 		try {
 			String topic = String.format(ConfigMapHelper.getConfigValue("CONFIG_CONSTANTS.SUBSCRIBE_CHAT_TOPIC"),roomid); 
-			Boolean allow = true;
-//			ScheduleTopic sct = scheduleTopicDAO.findByPK(roomid);
-//			if (personalService.isEmp(oprid)){
-//				ScheduleTopicTeacher findTeacher = sct.getScheduleTopicTeachers().stream()
-//						.filter(o -> (oprid.equals(o.getEmpInfo().getPerson().getPersId())) )
-//						.findFirst()
-//						.orElse(null);
-//				if (findTeacher != null)
-//					allow = true;
-//			}else{
-//				ScheduleTopicSectionStdnt findStdnt = sct.getScheduleTopicSectionStdnts().stream()
-//						.filter(o -> oprid.equals(o.getStdntInfo().getPerson().getPersId()))
-//						.findFirst()
-//						.orElse(null);
-//				if (findStdnt != null)
-//					allow = true;
-//			} FIXME uncomment
-			
-			if (!allow) {
-				throw new MEDException(ErrorConstants.SCHEDULE_NOT_ALLOW, roomid);
-			}
+			NotiSubscrTbl room = notiSubscrTblDAO.findByPK(roomid);
+			if(null == room) throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "room id : "+roomid);
 			List<NotiPool> history = notiPoolDAO.findChatByTopic(topic,lastMassage);
 			logger.debug("NOTIFICATION " + topic + " : " + history.size());
-			
 			for (int i=0;i<10;i++) {
-				// logger.debug("LOOP");
 				if(i == history.size()) break;
 				result.add(this.buildChatMsgBean(history.get(i)));
 			}
@@ -148,7 +131,7 @@ public class BroadcastService {
 		
 		return result;
 	}
-	public ChatMsgBean findLastMassageByChatroom(Integer roomid, Integer oprid) throws MEDException {
+	public ChatMsgBean findLastMassageByChatroom(Integer roomid) throws MEDException {
 		try {
 			String topic = String.format(ConfigMapHelper.getConfigValue("CONFIG_CONSTANTS.SUBSCRIBE_CHAT_TOPIC"),roomid); 
 			NotiPool lastPool = notiPoolDAO.findLastChatByTopic(topic);
@@ -188,9 +171,12 @@ public class BroadcastService {
 	public void broadcastChatMessage(ProcessBean pb) throws MEDException { //send chat
 		Integer oprid = Integer.parseInt(pb.getOprid());
 		ChatMessageRqType rq = pb.getRequest().getChatRqType();
-//		Integer oprid = rq.getPersId();
 		if (null == rq.getSubscrId()) //.getScheduleId()
 			throw new MEDException(ErrorConstants.MISSING_REQUIRED_FIELDS_PARAMS, "subscrId");
+		NotiSubscrTbl room = notiSubscrTblDAO.findByPK(rq.getSubscrId());
+		if(null == room) throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "room id : "+rq.getSubscrId());
+		if(Constants.MSSQL.LOGIC.FALSE == room.getIsActive())  throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "This room is INACTIVE");
+		
 		if (!StringUtils.isEmpty(rq.getMsg())) {
 			String topic = String.format(ConfigMapHelper.getConfigValue("CONFIG_CONSTANTS.SUBSCRIBE_CHAT_TOPIC"), 
                     rq.getSubscrId()); 

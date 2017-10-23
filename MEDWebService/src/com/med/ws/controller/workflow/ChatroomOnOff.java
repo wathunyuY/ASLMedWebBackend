@@ -18,8 +18,8 @@ public class ChatroomOnOff extends AbstractWorkflowController {
 	
 	@Override
 	public ResponseBody processTask(ProcessBean processBean) throws Exception {
-		// TODO Auto-generated method stub 
-		service.changeChatroomActiveStatus(Integer.parseInt(processBean.getPathVariable()), Integer.parseInt(processBean.getParams().getActive()),1);
+		service.changeChatroomActiveStatus(Integer.parseInt(processBean.getPathVariable()), 
+				Integer.parseInt(processBean.getParams().getActive()),Integer.parseInt(processBean.getOprid()));
 		return null; 
 	}
 

@@ -20,7 +20,8 @@ public class DeleteMemberByChatroom extends AbstractWorkflowController {
 	@Override
 	public ResponseBody processTask(ProcessBean processBean) throws Exception {
 		if(null != processBean.getPathVariable())
-			service.deleteMemberByPerrId(Integer.parseInt(processBean.getParams().getPersId()), Integer.parseInt(processBean.getPathVariable()));
+			service.deleteMemberBySubscrId(Integer.parseInt(processBean.getParams().getPersId()), 
+					Integer.parseInt(processBean.getPathVariable()));
 		else throw new MEDException(ErrorConstants.MISSING_REQUIRED_FIELDS_PARAMS," 'subscrId' is missing");
 		return null;
 	}

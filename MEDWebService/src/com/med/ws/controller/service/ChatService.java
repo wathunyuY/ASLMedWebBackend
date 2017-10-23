@@ -62,9 +62,10 @@ public class ChatService {
 	/**
 	 * Create Chatroom
 	 * @author Wathunyu.y
+	 * @throws MEDException 
 	 * 
 	 */
-	public void createAndUpdateChatroom(ChatroomBean rq ,Integer oprid){
+	public void createAndUpdateChatroom(ChatroomBean rq ,Integer oprid) throws MEDException{
 		try{
 			Date now = Calendar.getInstance().getTime();
 			NotiSubscrTbl tbl = null != rq.getSubscrId() ? subscrTblDAO.findByPK(rq.getSubscrId()) : null;
@@ -85,45 +86,76 @@ public class ChatService {
 				List<Integer> users = rq.getMembers();
 				if(0 < users.size()){
 					this.addMembers(users, tbl.getSubscrId());
-					
 				}
 			}
 		}catch(Exception ex){
-			logger.info(ex.getMessage() + "error");
-			return;
+			logger.debug(ex.getMessage() ,ex);
+			throw new MEDException(ErrorConstants.UNKNOW_DATABASE_ERROR);
+		}
+	}
+	/**
+	 * Delete chatroom
+	 * @throws MEDException 
+	 */
+	public void deleteChatroom(Integer subscrId) throws MEDException{
+		NotiSubscrTbl tbl = subscrTblDAO.findByPK(subscrId);
+		try{
+			for(NotiPersonSubscr s: tbl.getNotiPersonSubscrs())
+				notiPersonSubscrDAO.delete(s);
+			for(NotiSubscrPerson p: tbl.getNotiSubscrPersons())
+				subscrPersonDAO.delete(p);
+			subscrTblDAO.delete(tbl);
+		}catch(Exception ex){
+			logger.debug(ex.getMessage(),ex);
+			throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "room id : "+subscrId);
+		}
+	}
+	/**
+	 * Change Chatroom active status
+	 * @author Wathunyu.y
+	 * @param subscrId 
+	 * @param status
+	 * @throws MEDException 
+	 */
+	public void changeChatroomActiveStatus(Integer subscrId,Integer status,Integer oprid) throws MEDException{
+		try{
+			NotiSubscrTbl tbl =  subscrTblDAO.findByPK(subscrId);//FIXME ปิดห้องแล้วต้อง ลบ tokent ที่ subscr มั้ย ?
+			tbl.setIsActive(status);
+			tbl.setLastUpdOprid(oprid);
+			tbl.setLastUpdDttm(Calendar.getInstance().getTime());
+			subscrTblDAO.merge(tbl);
+		}catch(NullPointerException ne){
+			throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "room id : "+subscrId);
 		}
 	}
 	/**
 	 * Get chatroom all
 	 * @author Wathunyu.y
+	 * @throws MEDException 
 	 * 
 	 */
-	public List<ChatroomBean> getChatroom(){
+	public List<ChatroomBean> getChatroom() throws MEDException{
 		List<ChatroomBean> rs = new ArrayList<>();
 		try{
-			researchService.getCategory();
 			List<NotiSubscrTbl> tbls = (List<NotiSubscrTbl>) subscrTblDAO.findAll();
 			if(0 < tbls.size()){
 				for(NotiSubscrTbl tbl : tbls){
-//					if(Constants.MSSQL.LOGIC.TRUE == tbl.getIsActive()){
-						ChatroomBean b = new ChatroomBean();
-						b.setAllUserFlag(tbl.getAllUserFlag() == Constants.MSSQL.LOGIC.TRUE ? true:false);
-						b.setIsActive(tbl.getIsActive() == Constants.MSSQL.LOGIC.TRUE ? true:false);
-						b.setMemberDetails(new ArrayList<>());
-						b.setSubscrId(tbl.getSubscrId());
-						b.setSubscrName(tbl.getSubscrName());
-						b.setSubscrDescr(tbl.getSubscrDescr());
-						b.setLastMassage(broadcastService.findLastMassageByChatroom(tbl.getSubscrId(), 1));
-						rs.add(b);
-//					}
+					ChatroomBean b = new ChatroomBean();
+					b.setAllUserFlag(tbl.getAllUserFlag() == Constants.MSSQL.LOGIC.TRUE ? true:false);
+					b.setIsActive(tbl.getIsActive() == Constants.MSSQL.LOGIC.TRUE ? true:false);
+					b.setMemberDetails(new ArrayList<>());
+					b.setSubscrId(tbl.getSubscrId());
+					b.setSubscrName(tbl.getSubscrName());
+					b.setSubscrDescr(tbl.getSubscrDescr());
+					b.setLastMassage(broadcastService.findLastMassageByChatroom(tbl.getSubscrId()));
+					rs.add(b);
 				}
 			}
-			
 		}catch(Exception ex){
-			logger.info(ex.getMessage());
+			logger.debug(ex.getMessage(),ex);
+			throw new MEDException(ErrorConstants.UNKNOW_ERROR);
 		}
 		return rs;
-		
 	}
 	/**
 	 * Get chatroom by id
@@ -135,19 +167,16 @@ public class ChatService {
 		try{
 			NotiSubscrTbl tbl =  subscrTblDAO.findByPK(subscrId);
 			ChatroomBean b = new ChatroomBean();
-//			if(Constants.MSSQL.LOGIC.TRUE == tbl.getIsActive()){
-				b.setAllUserFlag(tbl.getAllUserFlag() == Constants.MSSQL.LOGIC.TRUE ? true:false);
-				b.setMemberDetails(getMembersByChatroom(tbl.getSubscrId()));
-				b.setIsActive(tbl.getIsActive() == Constants.MSSQL.LOGIC.TRUE ? true:false);
-				b.setSubscrId(tbl.getSubscrId());
-				b.setSubscrName(tbl.getSubscrName());
-				b.setSubscrDescr(tbl.getSubscrDescr());
-				return b;
-//			}else return null; 
-				
+			b.setAllUserFlag(tbl.getAllUserFlag() == Constants.MSSQL.LOGIC.TRUE ? true:false);
+			b.setMemberDetails(getMembersByChatroom(tbl.getSubscrId()));
+			b.setIsActive(tbl.getIsActive() == Constants.MSSQL.LOGIC.TRUE ? true:false);
+			b.setSubscrId(tbl.getSubscrId());
+			b.setSubscrName(tbl.getSubscrName());
+			b.setSubscrDescr(tbl.getSubscrDescr());
+			return b;
 		}catch(Exception ex){
 			logger.info(ex.getMessage(),ex);
-			throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "Chatroom not found for id:"+ subscrId);
+			throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "room id : "+subscrId);
 		}
 	}
 	/**
@@ -160,18 +189,17 @@ public class ChatService {
 			throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "Chatroom not found for id:"+ persId);
 		try{
 			List<ChatroomBean> rs = new ArrayList<>();
-			List<NotiSubscrTbl> tbls =  subscrTblDAO.findByPersId(persId);//FIXME wirte dao impl
+			List<NotiSubscrTbl> tbls =  subscrTblDAO.findByPersId(persId);
 			if(null != tbls){
 				for(NotiSubscrTbl tbl : tbls){
 					ChatroomBean b = new ChatroomBean();
 					if(Constants.MSSQL.LOGIC.TRUE == tbl.getIsActive()){
 						b.setAllUserFlag(tbl.getAllUserFlag() == Constants.MSSQL.LOGIC.TRUE ? true:false);
-//						b.setMemberDetails(getMembersByChatroom(tbl.getSubscrId()));
 						b.setMemberDetails(new ArrayList<>());
 						b.setSubscrId(tbl.getSubscrId());
 						b.setSubscrName(tbl.getSubscrName());
 						b.setSubscrDescr(tbl.getSubscrDescr());
-						b.setLastMassage(broadcastService.findLastMassageByChatroom(tbl.getSubscrId(), 1));
+						b.setLastMassage(broadcastService.findLastMassageByChatroom(tbl.getSubscrId()));
 						rs.add(b);
 					}
 				}
@@ -183,24 +211,6 @@ public class ChatService {
 		}
 	}
 	
-	/**
-	 * Change Chatroom active status
-	 * @author Wathunyu.y
-	 * @param subscrId 
-	 * @param status
-	 * @throws MEDException 
-	 */
-	public void changeChatroomActiveStatus(Integer subscrId,Integer status,Integer oprid) throws MEDException{
-		try{
-			NotiSubscrTbl tbl =  subscrTblDAO.findByPK(subscrId);
-			tbl.setIsActive(status);
-			tbl.setLastUpdOprid(oprid);
-			tbl.setLastUpdDttm(Calendar.getInstance().getTime());
-			subscrTblDAO.merge(tbl);
-		}catch(NullPointerException ne){
-			throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "Chatroom not found for id:"+ subscrId);
-		}
-	}
 	
 	/**
 	 * add member
@@ -210,22 +220,11 @@ public class ChatService {
 	 */
 	public Integer addMembers(List<Integer> members ,Integer subscrId) throws Exception{
 		Date now = Calendar.getInstance().getTime();
-		NotiSubscrTbl group = subscrTblDAO.findByPK(subscrId);
-		if(null == group) throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "Chatroom not found for id:"+ subscrId);
-		if(Constants.MSSQL.LOGIC.FALSE == group.getIsActive()) 	throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "Chatroom not active for id:"+ subscrId);
-		logger.info("tests");
+		NotiSubscrTbl room = subscrTblDAO.findByPK(subscrId);
+		if(null == room) throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "Chatroom not found for id:"+ subscrId);
+		if(Constants.MSSQL.LOGIC.FALSE == room.getIsActive()) 	throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "Chatroom not active for id:"+ subscrId);
+		if(Constants.MSSQL.LOGIC.TRUE == room.getAllUserFlag()) throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "Chatroom is public for id:"+ subscrId);
 		for(Integer member :members){
-//			List<PersLoginDevice> devi = loginDeviceDAO.findByPersId(member);
-//			if(null != devi){
-//				for(PersLoginDevice d : devi){
-//					NotiSubscrPersonId npId = new NotiSubscrPersonId(subscrId, d.getPersLoginDevice());
-//					NotiSubscrPerson np = new NotiSubscrPerson();
-//					np.setLastUpdDttm(now);
-//					np.setId(npId);
-//					np.setStatus("");
-//					subscrPersonDAO.merge(np);
-//				}
-//			}
 			try{
 				NotiPersonSubscrId id = new NotiPersonSubscrId(subscrId, member);
 				NotiPersonSubscr tbl = new NotiPersonSubscr();
@@ -234,7 +233,7 @@ public class ChatService {
 				tbl.setStatus("sub");
 				notiPersonSubscrDAO.merge(tbl);
 			}catch(Exception ex){
-				logger.info(ex.getMessage(),ex);
+				logger.debug(ex.getMessage(),ex);
 			}
 		}
 		return 0;
@@ -245,11 +244,11 @@ public class ChatService {
 	 * @param persId
 	 * @throws MEDException 
 	 */
-	public void deleteMemberByPerrId(Integer persId,Integer subscrId) throws MEDException{
-		List<PersLoginDevice> dev = loginDeviceDAO.findByPersId(persId);
+	public void deleteMemberBySubscrId(Integer persId,Integer subscrId) throws MEDException{
 		try{
 			NotiPersonSubscrId npid = new NotiPersonSubscrId(subscrId, persId);
 			notiPersonSubscrDAO.delete(notiPersonSubscrDAO.findByPK(npid));
+			List<PersLoginDevice> dev = loginDeviceDAO.findByPersId(persId);
 			if(null != dev){
 				for(PersLoginDevice d : dev){
 					NotiSubscrPersonId id = new NotiSubscrPersonId(subscrId,d.getPersLoginDevice());
@@ -260,6 +259,7 @@ public class ChatService {
 				}
 			}
 		}catch(Exception ex){
+			logger.debug(ex.getMessage(),ex);
 			throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "Chatroom not found for persId:"+ persId);
 		}
 		
@@ -298,7 +298,7 @@ public class ChatService {
 	  */
 	public void acceptChatLaw(ProcessBean rq) throws MEDException{
 		try{
-			Integer persId = null == rq.getOprid() ? Integer.parseInt(rq.getPathVariable()) : Integer.parseInt(rq.getOprid());//FIXME
+			Integer persId = Integer.parseInt(rq.getOprid());
 			PersLoginDevice device = persLoginDeviceDAO.findByRegisTokenAndUser(rq.getRequest().getFcmTokenRqType().getFcmToken(), persId); //findByPersId(persId);
 			device.setAcceptFlag(Constants.MSSQL.LOGIC.TRUE);
 			persLoginDeviceDAO.merge(device);
@@ -310,6 +310,8 @@ public class ChatService {
 			}
 		}catch(Exception ex){
 			logger.info(ex.getMessage(),ex);
+			throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "device not found for persId:"+ rq.getOprid());
+
 		}
 	}
 	/**

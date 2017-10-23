@@ -18,8 +18,7 @@ public class DeleteChatroom extends AbstractWorkflowController {
 	
 	@Override
 	public ResponseBody processTask(ProcessBean processBean) throws Exception {
-//		service.changeChatroomActiveStatus(Integer.parseInt(processBean.getPathVariable()), Constants.MSSQL.LOGIC.FALSE,Integer.parseInt(processBean.getOprid()));
-		service.changeChatroomActiveStatus(Integer.parseInt(processBean.getPathVariable()), Constants.MSSQL.LOGIC.FALSE,1);
+		service.deleteChatroom(Integer.parseInt(processBean.getPathVariable()));
 		return null;
 	}
 

@@ -18,7 +18,7 @@ public class GetChatroomByPersId extends AbstractWorkflowController {
 	@Override
 	public ResponseBody processTask(ProcessBean processBean) throws Exception {
 		ResponseBody rs = new ResponseBody();
-		rs.setChatroomRsTypes(service.getChatroomByPerson(Integer.parseInt(processBean.getPathVariable())));
+		rs.setChatroomRsTypes(service.getChatroomByPerson(Integer.parseInt(processBean.getOprid())));
 		return rs;
 	}
 

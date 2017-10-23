@@ -341,6 +341,7 @@ public class ResponseBody {
 	protected ResearchBean researchRsType;
 	protected ResearchFilterBean researchFilterRsType;
 	protected List<ResearchBean> researchRsTypes;
+	protected Boolean isAcceptChatroomLaw;
 	
 	public PersonEvaluationDTO getPersonEvaluation() {
 		return personEvaluation;
@@ -1756,6 +1757,14 @@ public class ResponseBody {
 
 	public void setResearchRsTypes(List<ResearchBean> researchRsTypes) {
 		this.researchRsTypes = researchRsTypes;
+	}
+
+	public Boolean getIsAcceptChatroomLaw() {
+		return isAcceptChatroomLaw;
+	}
+
+	public void setIsAcceptChatroomLaw(Boolean isAcceptChatroomLaw) {
+		this.isAcceptChatroomLaw = isAcceptChatroomLaw;
 	}
 
 	

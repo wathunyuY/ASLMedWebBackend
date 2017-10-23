@@ -16,7 +16,6 @@ public class ChatBroadcast extends AbstractWorkflowController {
 	
 	@Override
 	public ResponseBody processTask(ProcessBean processBean) throws Exception {
-//		processBean.setOprid("1");
 		service.broadcastChatMessage(processBean);
 		return null;
 	}

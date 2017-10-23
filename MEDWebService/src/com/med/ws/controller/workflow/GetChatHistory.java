@@ -26,8 +26,8 @@ public class GetChatHistory extends AbstractWorkflowController {
 		if(null != processBean.getParams().getDate())
 			lastMassageDate = new Date(Long.parseLong(processBean.getParams().getDate()));
 		Integer roomId = Integer.parseInt(processBean.getPathVariable());
-//		Integer oprid = Integer.parseInt(processBean.getOprid()); FIXME
-		List<ChatMsgBean> rs = service.findHistoryChat(roomId,lastMassageDate, 1);
+		Integer oprid = Integer.parseInt(processBean.getOprid());
+		List<ChatMsgBean> rs = service.findHistoryChat(roomId,lastMassageDate, oprid);
 		body.setChatMsgListRsType(rs);
 		return body;
 	}

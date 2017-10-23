@@ -8,18 +8,17 @@ import com.med.ws.controller.service.ChatService;
 import com.med.ws.controller.workflow.master.AbstractWorkflowController;
 import com.med.ws.controller.workflow.master.ProcessBean;
 import com.med.ws.dto.response.ResponseBody;
-
 @Service
 @Transactional
-public class CreateChatroom extends AbstractWorkflowController {
-
+public class CheckAcceptChatroomLaw extends AbstractWorkflowController {
 	@Autowired
 	ChatService service;
-	
 	@Override
 	public ResponseBody processTask(ProcessBean processBean) throws Exception {
-		service.createAndUpdateChatroom(processBean.getRequest().getChatroomBeanRqType(), Integer.parseInt(processBean.getOprid()));
-		return null;
+		ResponseBody rs = new ResponseBody();
+		Boolean acc = service.checkAcceptChatLaw(Integer.parseInt(processBean.getOprid()), processBean.getRequest().getFcmTokenRqType().getFcmToken());
+		rs.setIsAcceptChatroomLaw(acc);
+		return rs;
 	}
 
 }
