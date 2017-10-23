@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.persistence.TemporalType;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Repository;
 
 import com.med.common.contants.ConfigMapHelper;
 import com.med.common.contants.NotificationTypeConstants;
+import com.med.common.utils.DateUtils;
 import com.med.ods.dao.NotiPoolDAO;
 import com.med.ods.entity.NotiPool;
 
@@ -92,7 +94,7 @@ public class NotiPoolDAOImpl extends GenericDAOImpl<NotiPool, Integer> implement
 		Query qr = entityManager.createQuery(hql);
 		qr.setParameter("topic", topic);
 		if(null != lastMassageDate)
-			qr.setParameter("lastMassageDate", lastMassageDate);
+			qr.setParameter("lastMassageDate", lastMassageDate,TemporalType.TIMESTAMP);
 //		qr.setMaxResults(20);
 		try{
 			result = qr.getResultList();
