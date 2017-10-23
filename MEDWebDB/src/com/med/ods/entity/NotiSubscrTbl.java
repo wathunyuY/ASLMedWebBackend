@@ -33,6 +33,7 @@ public class NotiSubscrTbl implements java.io.Serializable {
 	private String subscrDescr;
 	private Set<NotiUnsubscrTemp> notiUnsubscrTemps = new HashSet<NotiUnsubscrTemp>(0);
 	private Set<NotiSubscrPerson> notiSubscrPersons = new HashSet<NotiSubscrPerson>(0);
+	private Set<NotiPersonSubscr> notiPersonSubscrs = new HashSet<NotiPersonSubscr>(0);
 
 	public NotiSubscrTbl() {
 	}
@@ -150,4 +151,14 @@ public class NotiSubscrTbl implements java.io.Serializable {
 		this.notiSubscrPersons = notiSubscrPersons;
 	}
 
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "notiSubscrTbl")
+	public Set<NotiPersonSubscr> getNotiPersonSubscrs() {
+		return notiPersonSubscrs;
+	}
+
+	public void setNotiPersonSubscrs(Set<NotiPersonSubscr> notiPersonSubscrs) {
+		this.notiPersonSubscrs = notiPersonSubscrs;
+	}
+	
+	
 }

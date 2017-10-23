@@ -19,5 +19,7 @@ public class FcmTokenRqType {
 	public void setPersId(Integer persId) {
 		this.persId = persId;
 	}
+
+	
 	
 }

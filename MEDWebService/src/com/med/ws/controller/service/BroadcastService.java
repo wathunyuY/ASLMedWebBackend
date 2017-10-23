@@ -186,9 +186,9 @@ public class BroadcastService {
 	}
 
 	public void broadcastChatMessage(ProcessBean pb) throws MEDException { //send chat
-//		Integer oprid = Integer.parseInt(pb.getOprid());
+		Integer oprid = Integer.parseInt(pb.getOprid());
 		ChatMessageRqType rq = pb.getRequest().getChatRqType();
-		Integer oprid = rq.getPersId();
+//		Integer oprid = rq.getPersId();
 		if (null == rq.getSubscrId()) //.getScheduleId()
 			throw new MEDException(ErrorConstants.MISSING_REQUIRED_FIELDS_PARAMS, "subscrId");
 		if (!StringUtils.isEmpty(rq.getMsg())) {
@@ -220,10 +220,10 @@ public class BroadcastService {
 				if (null != result.getFailure() && result.getFailure() > 0)
 					logger.info("Send failed: " + result.getFailure());
 			} catch (IOException io) {
-				logger.error(io.getMessage(), io);
+				logger.info(io.getMessage(), io);
 				throw new MEDException(ErrorConstants.UNKNOW_HTTP_ERROR);
 			} catch (Exception e){
-				logger.error(e.getMessage(), e);
+				logger.info(e.getMessage(), e);
 				throw e;
 			}
 			

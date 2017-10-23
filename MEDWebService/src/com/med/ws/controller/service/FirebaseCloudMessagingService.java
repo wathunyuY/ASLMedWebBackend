@@ -144,6 +144,7 @@ public class FirebaseCloudMessagingService {
 							device.setConnectionType(json.get("connectionType").getAsString());
 						device.setLastUpdDttm(Calendar.getInstance().getTime());
 						device.setLastUpdOprid(oprid);
+						device.setAcceptFlag(Constants.MSSQL.LOGIC.FALSE);
 						persLoginDeviceDAO.merge(device);
 					} catch (Exception e) {
 						logger.error(e.getMessage(), e);
@@ -166,6 +167,7 @@ public class FirebaseCloudMessagingService {
 		JsonObject response = retrieveRegistokenDetail(userToken);
 		List<String> result = new ArrayList<>();
 		if (null != response) {
+			if(null == response.get("rel")) return result;
 			JsonObject rel = response.get("rel").getAsJsonObject();
 			JsonObject topics = rel.get("topics").getAsJsonObject();
 			result = topics.entrySet().stream().map(i -> "/topics/".concat(i.getKey())).collect(Collectors.toList());
@@ -313,11 +315,11 @@ public class FirebaseCloudMessagingService {
 			// os.write(msgBody.toString().getBytes("UTF-8"));
 			// os.close();
 			if (conn.getResponseCode() != 200) {
-				logger.error(conn.getInputStream().toString());
+				logger.info(conn.getInputStream().toString());
 				// throw new MEDException(ErrorConstants.UNKNOW_HTTP_ERROR);
 			}
 			if (conn.getResponseCode() == 200) {
-				logger.debug("UNSUBCRIBE: " + topic);
+				logger.info("UNSUBCRIBE: " + topic);
 				// Read the response
 				InputStream in = new BufferedInputStream(conn.getInputStream());
 				// String result = org.apache.commons.io.IOUtils.toString(in,
@@ -377,12 +379,12 @@ public class FirebaseCloudMessagingService {
 		// if (StringUtils.isEmpty(token))
 		// throw new MEDException(ErrorConstants.MISSING_REQUIRED_FIELDS_PARAMS,
 		// "FCM_REGIS_TOKEN");
-		if (pb.getIsAppReq()) {
+//		if (pb.getIsAppReq()) {
 			for (String topic : retrieveTopicList(token)) {
 				// /topics/{{topic_name}}
 				userUnsubscribe(topic, token);
 			}
-		}
+//		}
 	}
 
 	/**
@@ -435,7 +437,7 @@ public class FirebaseCloudMessagingService {
 	private void addSubscriberFromDatabase(String topic, List<String> tokens, JsonArray results) {
 		// Save Subscriber action
 		Date now = Calendar.getInstance().getTime();
-		NotiSubscrTbl subscr_topic = notiSubscrTblDAO.findByPK(topic);
+		NotiSubscrTbl subscr_topic = notiSubscrTblDAO.findByPK(Integer.parseInt(topic.split("-")[1])); ///topics/chatroom-%d-dev
 		if (null == subscr_topic) {
 			subscr_topic = new NotiSubscrTbl();
 			subscr_topic.setIsActive(true ? 1 : 0);
@@ -493,6 +495,8 @@ public class FirebaseCloudMessagingService {
 	private void deleteFcmTokenByPersAndToken(String token, Integer persId) {
 		PersLoginDevice device = persLoginDeviceDAO.findByRegisTokenAndUser(token, persId);
 		if (null != device) {
+			for(NotiSubscrPerson np : device.getNotiSubscrPersons())
+				notiSubscrPersonDAO.delete(np);
 			persLoginDeviceDAO.delete(device);
 			logger.info("Removed Token: "+token+" of PERS_ID ["+persId+"]");
 		}
