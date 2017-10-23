@@ -11,6 +11,7 @@ public class ChatroomBean {
 	private String subscrName;
 	private String subscrDescr;
 	private ChatMsgBean lastMassage;
+	private Boolean isActive;
 	private List<Integer> members;
 	private List<MemberBean> memberDetails;
 	public List<MemberBean> getMemberDetails() {
@@ -61,6 +62,12 @@ public class ChatroomBean {
 	}
 	public void setLastMassage(ChatMsgBean lastMassage) {
 		this.lastMassage = lastMassage;
+	}
+	public Boolean getIsActive() {
+		return isActive;
+	}
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
 	}
 	
 	

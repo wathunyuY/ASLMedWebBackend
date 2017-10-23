@@ -117,6 +117,8 @@ public class ASLService {
 					logger.error(conn.getInputStream().toString());
 				}
 				if (200 == conn.getResponseCode()) {
+					rs.setUsername("");
+					rs.setSignature("");
 					logger.debug("200");
 					InputStream in = new BufferedInputStream(conn.getInputStream());
 					String result = org.apache.commons.io.IOUtils.toString(in,"UTF-8");

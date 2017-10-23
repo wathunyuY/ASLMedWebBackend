@@ -117,7 +117,6 @@ public class PDFService {
 	        } catch (Exception e) {
 	          //catch any exceptions here
 	        }
-//
 	        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(dest));
 	        document.open();
 	        XMLWorkerFontProvider fontImp = new XMLWorkerFontProvider(XMLWorkerFontProvider.DONTLOOKFORFONTS);

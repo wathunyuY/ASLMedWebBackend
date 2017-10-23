@@ -22,9 +22,12 @@ public class GetChatHistory extends AbstractWorkflowController {
 	@Override
 	public ResponseBody processTask(ProcessBean processBean) throws Exception {
 		ResponseBody body = new ResponseBody();
+		Date lastMassageDate = null;
+		if(null != processBean.getParams().getDate())
+			lastMassageDate = new Date(Long.parseLong(processBean.getParams().getDate()));
 		Integer roomId = Integer.parseInt(processBean.getPathVariable());
 //		Integer oprid = Integer.parseInt(processBean.getOprid()); FIXME
-		List<ChatMsgBean> rs = service.findHistoryChat(roomId,null, 1);
+		List<ChatMsgBean> rs = service.findHistoryChat(roomId,lastMassageDate, 1);
 		body.setChatMsgListRsType(rs);
 		return body;
 	}

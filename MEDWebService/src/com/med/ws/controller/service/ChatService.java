@@ -44,6 +44,8 @@ public class ChatService {
 	BroadcastService broadcastService;
 	@Autowired
 	ResearchService researchService;
+	@Autowired
+	PersLoginDeviceDAO persLoginDeviceDAO;
 	
 	/**
 	 * Create Chatroom
@@ -94,6 +96,7 @@ public class ChatService {
 					if(Constants.MSSQL.LOGIC.TRUE == tbl.getIsActive()){
 						ChatroomBean b = new ChatroomBean();
 						b.setAllUserFlag(tbl.getAllUserFlag() == Constants.MSSQL.LOGIC.TRUE ? true:false);
+						b.setIsActive(tbl.getIsActive() == Constants.MSSQL.LOGIC.TRUE ? true:false);
 						b.setMemberDetails(new ArrayList<>());
 						b.setSubscrId(tbl.getSubscrId());
 						b.setSubscrName(tbl.getSubscrName());
@@ -123,6 +126,7 @@ public class ChatService {
 			if(Constants.MSSQL.LOGIC.TRUE == tbl.getIsActive()){
 				b.setAllUserFlag(tbl.getAllUserFlag() == Constants.MSSQL.LOGIC.TRUE ? true:false);
 				b.setMemberDetails(getMembersByChatroom(tbl.getSubscrId()));
+				b.setIsActive(tbl.getIsActive() == Constants.MSSQL.LOGIC.TRUE ? true:false);
 				b.setSubscrId(tbl.getSubscrId());
 				b.setSubscrName(tbl.getSubscrName());
 				b.setSubscrDescr(tbl.getSubscrDescr());
@@ -140,10 +144,11 @@ public class ChatService {
 	 * @param persId
 	 */
 	public List<ChatroomBean> getChatroomByPerson(Integer persId) throws MEDException{
+		if(null == personDAO.findByPK(persId))
+			throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "Chatroom not found for id:"+ persId);
 		try{
 			List<ChatroomBean> rs = new ArrayList<>();
 			List<NotiSubscrTbl> tbls =  subscrTblDAO.findByPersId(persId);//FIXME wirte dao impl
-			logger.info("1-1-1--1-");
 			if(null != tbls){
 				for(NotiSubscrTbl tbl : tbls){
 					ChatroomBean b = new ChatroomBean();
@@ -257,5 +262,16 @@ public class ChatService {
 			
 		}
 		return rs;
+	}
+	 /**
+	  * accept chat law by pers
+	  */
+	public void acceptChatLaw(Integer persId,Integer status){
+		List<PersLoginDevice> devices = persLoginDeviceDAO.findByPersId(persId);
+		for(PersLoginDevice device : devices){
+			device.setAcceptFlag(status);
+			persLoginDeviceDAO.merge(device);
+		}
+		
 	}
 }
