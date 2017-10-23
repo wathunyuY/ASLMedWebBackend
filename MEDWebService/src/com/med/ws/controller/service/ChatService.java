@@ -272,6 +272,18 @@ public class ChatService {
 			device.setAcceptFlag(status);
 			persLoginDeviceDAO.merge(device);
 		}
-		
 	}
+	/**
+	 * check accept law by token
+	 * @throws MEDException 
+	 * 
+	 */
+	public Boolean checkAcceptChatLaw(Integer persId ,String token) throws MEDException{
+		try{
+			return persLoginDeviceDAO.findByRegisTokenAndUser(token, persId).getAcceptFlag() == Constants.MSSQL.LOGIC.TRUE ? true :false;
+		}catch(Exception ex){
+			throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "device not found for persId:"+ persId);
+		}
+	}
+	
 }
