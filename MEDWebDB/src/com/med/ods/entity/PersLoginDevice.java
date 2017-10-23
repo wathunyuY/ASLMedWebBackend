@@ -32,6 +32,7 @@ public class PersLoginDevice implements java.io.Serializable {
 	private String platform;
 	private String connectionType;
 	private Date connectDate;
+	private Integer acceptFlag;
 	private Set<NotiSubscrPerson> notiSubscrPersons = new HashSet<NotiSubscrPerson>(0);
 
 	public PersLoginDevice() {
@@ -129,6 +130,15 @@ public class PersLoginDevice implements java.io.Serializable {
 
 	public void setConnectDate(Date connectDate) {
 		this.connectDate = connectDate;
+	}
+	
+	@Column(name = "ACCEPT_FLAG")
+	public Integer getAcceptFlag() {
+		return acceptFlag;
+	}
+
+	public void setAcceptFlag(Integer acceptFlag) {
+		this.acceptFlag = acceptFlag;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "persLoginDevice")
