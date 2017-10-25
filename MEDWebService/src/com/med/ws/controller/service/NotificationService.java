@@ -319,8 +319,6 @@ public class NotificationService {
 			BeanInfo beanInfo = Introspector.getBeanInfo(bean.getClass());
 			for (PropertyDescriptor propertyDesc : beanInfo.getPropertyDescriptors()) {
 				String varName = propertyDesc.getName();
-//				 logger.debug(varName);
-//				 logger.debug(data.get(varName));
 				bean = (NotificationDataParamBean) BeanUtils.dynamicSetter(varName, data.get(varName), bean);
 			}
 		} catch (Exception e) {
@@ -340,8 +338,8 @@ public class NotificationService {
 				Object value;
 				if (attr.getId().getKey().equals("empCode") || attr.getId().getKey().equals("classSection"))
 					value = attr.getValue();
-				else if (StringUtils.isNumeric(attr.getValue()))
-					value = Integer.parseInt(attr.getValue());
+//				else if (StringUtils.isNumeric(attr.getValue()))
+//					value = Integer.parseInt(attr.getValue());
 				else
 					value = attr.getValue();
 				result.put(attr.getId().getKey(), value);

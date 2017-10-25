@@ -13,6 +13,7 @@ public class ChatMsgBean extends AbstractMessage {
 	private SenderDetail sender;
 	private String msg;
 	private Integer scheduleTopic;
+	private String imagePath;
 	public String getMsg() {
 		return msg;
 	}
@@ -32,6 +33,13 @@ public class ChatMsgBean extends AbstractMessage {
 		this.sender = sender;
 	}
 	
+	public String getImagePath() {
+		return imagePath;
+	}
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
+	}
+
 	public static class SenderDetail{
 		String name;
 		String picpath;

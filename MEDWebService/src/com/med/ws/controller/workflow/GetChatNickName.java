@@ -10,13 +10,16 @@ import com.med.ws.controller.workflow.master.ProcessBean;
 import com.med.ws.dto.response.ResponseBody;
 @Service
 @Transactional
-public class UpdateChatNickname extends AbstractWorkflowController {
+public class GetChatNickName extends AbstractWorkflowController {
+
 	@Autowired
 	PersonalService service;
+	
 	@Override
 	public ResponseBody processTask(ProcessBean processBean) throws Exception {
-		service.updateNickname(processBean.getPathVariable(), Integer.parseInt(processBean.getOprid()));
-		return null;
+		ResponseBody rs = new ResponseBody();
+		rs.setResult(service.getNickname(Integer.parseInt(processBean.getOprid())));
+		return rs;
 	}
 
 }

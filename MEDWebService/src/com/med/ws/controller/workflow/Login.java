@@ -76,6 +76,8 @@ public class Login extends AbstractWorkflowController {
 		loginRsType.setUsername(username);
 		loginRsType.setSignature(JWTUtils.sign(username, String.valueOf(account.getPersId())));
 		loginRsType.setGroup(account.getTypeEmp() ? "Admin" : "User");
+		String nickname = account.getPerson().getPersonCurrent().getPersNickname();
+		loginRsType.setName(null == nickname ? "":nickname);
 		data.setLoginRs(loginRsType);
 		PersonCurrent current = personCurrentDAO.findByPK(account.getPersId());
 		String slash = Constants.SYMBOLIC.SLASH;

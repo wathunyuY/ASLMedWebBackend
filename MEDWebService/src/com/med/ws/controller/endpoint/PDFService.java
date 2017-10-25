@@ -51,7 +51,7 @@ public class PDFService {
 	public static String root_image_path = ConfigMapHelper.getConfigValue("CONFIG_CONSTANTS.ROOT_IMAGE_DIRECTORY");//image
 	public static String root_path = ConfigMapHelper.getConfigValue("CONFIG_CONSTANTS.IMAGE_ROOT_DIRECTORY"); //var/www/res..
 	public static String slash = Constants.SYMBOLIC.SLASH;
-	public static String front = root_path + slash + pdf_path + slash + "font/angsa.ttf";
+	public static String front = root_path + slash + pdf_path + slash + "font/THSarabunNew.ttf";//angsa
 	 @RequestMapping(value="/getpdf", method=RequestMethod.GET)
 	    public @ResponseBody MasterResponse getpdf(@RequestParam("research") Integer research, HttpServletRequest request,HttpServletResponse response) throws IOException, DocumentException, MEDException {
 		    Date now = Calendar.getInstance().getTime();
@@ -99,10 +99,10 @@ public class PDFService {
 	            writers.write("<head>");writers.newLine();
 	            writers.write("<meta http-equiv=\"content-type\" content=\"application/xhtml+xml; charset=UTF-8\"/>");writers.newLine();
 	            writers.write("</head>");writers.newLine();
-	            writers.write("<body style=\"font-family: Angsana New; font-size:20px; \" > ");writers.newLine();
+	            writers.write("<body style=\"font-family: THSarabunNew; font-size:20px; \" > ");writers.newLine();
 	            
 	            writers.write("<h2>"+d.getResearchName()+( null != d.getResearchSymbol() ?  " ( "+ d.getResearchSymbol() +" )" : "")+"</h2>");writers.newLine();
-	            writers.write("<span style=\"font-size:16px; color:gray;  \">" +"     By " + (null != d.getResearchAuthor() ? d.getResearchAuthor() : "-") + "</span>");
+	            writers.write("<span style=\"font-size:16px; color:gray;  \">" +"Analyst :" + (null != d.getResearchAuthor() ? d.getResearchAuthor() : "-") + "</span>");
 	            writers.write(sb.toString());writers.newLine();
 	            if(null != d.getResearchPicture()){
 	            	writers.write("<div align=\"center\"><br/><br/>");

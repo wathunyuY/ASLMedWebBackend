@@ -16,6 +16,7 @@ public class NotificationDataParamBean {
 	private String empCode;
 	private String classSection;
 	private Integer applicationFormId;
+	private String imagePath;
 	
 	public Integer getTaskId() {
 		return taskId;
@@ -100,6 +101,12 @@ public class NotificationDataParamBean {
 	}
 	public void setApplicationFormId(Integer applicationFormId) {
 		this.applicationFormId = applicationFormId;
+	}
+	public String getImagePath() {
+		return imagePath;
+	}
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
 	}
 	
 }

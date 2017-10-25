@@ -5,6 +5,7 @@ public class ChatMessageRqType {
 	protected Integer scheduleId;
 	protected String msg;
 	protected Integer persId;
+	protected String image;
 	public Integer getScheduleId() {
 		return scheduleId;
 	}
@@ -28,6 +29,12 @@ public class ChatMessageRqType {
 	}
 	public void setPersId(Integer persId) {
 		this.persId = persId;
+	}
+	public String getImage() {
+		return image;
+	}
+	public void setImage(String image) {
+		this.image = image;
 	}
 	
 }

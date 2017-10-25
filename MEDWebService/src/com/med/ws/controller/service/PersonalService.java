@@ -109,6 +109,19 @@ public class PersonalService {
 	}
 	
 	/**
+	 * get nickName 
+	 * @throws MEDException 
+	 */
+	public String getNickname(Integer persId) throws MEDException{
+		try{
+			PersonCurrent p = personCurrentDAO.findByPK(persId);
+			String nickname = p.getPersNickname();
+			return null != nickname ? nickname : "";
+		}catch(Exception ex){
+			throw new MEDException(ErrorConstants.MISSING_REQUIRED_FIELDS_PARAMS,"ID : "+persId +" not found");
+		}
+	}
+	/**
 	 * update nickName 
 	 * @throws MEDException 
 	 */

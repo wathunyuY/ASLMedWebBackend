@@ -1,8 +1,8 @@
 package com.med.ws.controller.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -11,12 +11,19 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
+import com.google.android.gcm.server.Message;
+import com.google.android.gcm.server.Notification;
+import com.google.android.gcm.server.Result;
+import com.google.android.gcm.server.Sender;
+import com.google.gson.Gson;
 import com.med.asl.ws.bean.ChatroomBean;
 import com.med.asl.ws.bean.MemberBean;
 import com.med.common.contants.ConfigMapHelper;
 import com.med.common.contants.Constants;
 import com.med.common.contants.ErrorConstants;
+import com.med.common.contants.NotificationTypeConstants;
 import com.med.common.exception.MEDException;
 import com.med.ods.dao.NotiPersonSubscrDAO;
 import com.med.ods.dao.NotiSubscrPersonDAO;
@@ -25,13 +32,18 @@ import com.med.ods.dao.PersLoginDeviceDAO;
 import com.med.ods.dao.PersonDAO;
 import com.med.ods.entity.NotiPersonSubscr;
 import com.med.ods.entity.NotiPersonSubscrId;
+import com.med.ods.entity.NotiPool;
 import com.med.ods.entity.NotiSubscrPerson;
 import com.med.ods.entity.NotiSubscrPersonId;
 import com.med.ods.entity.NotiSubscrTbl;
 import com.med.ods.entity.PersLoginDevice;
 import com.med.ods.entity.Person;
 import com.med.ods.entity.PersonCurrent;
+import com.med.ws.beans.ChatMsgBean;
+import com.med.ws.beans.NotificationDataParamBean;
+import com.med.ws.beans.ChatMsgBean.SenderDetail;
 import com.med.ws.controller.workflow.master.ProcessBean;
+import com.med.ws.dto.type.rq.ChatMessageRqType;
 
 @Service
 @Transactional
@@ -58,6 +70,10 @@ public class ChatService {
 	NotificationService notificationService;
 	@Autowired
 	FirebaseCloudMessagingService firebaseCloudMessagingService;
+	@Autowired
+	ImageService imageService;
+	@Autowired
+	PersonalService personalService;
 	
 	/**
 	 * Create Chatroom
