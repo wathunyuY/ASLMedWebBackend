@@ -15,9 +15,9 @@ import org.springframework.util.CollectionUtils;
 
 import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.med.asl.ws.bean.ResearchBean;
-import com.med.asl.ws.bean.ResearchCategoryBean;
-import com.med.asl.ws.bean.ResearchFilterBean;
+import com.med.asl.ws.beans.ResearchBean;
+import com.med.asl.ws.beans.ResearchCategoryBean;
+import com.med.asl.ws.beans.ResearchFilterBean;
 import com.med.common.contants.ConfigMapHelper;
 import com.med.common.contants.Constants;
 import com.med.common.contants.ErrorConstants;

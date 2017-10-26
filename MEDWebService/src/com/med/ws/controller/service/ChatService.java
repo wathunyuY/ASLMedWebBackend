@@ -1,6 +1,5 @@
 package com.med.ws.controller.service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -11,19 +10,12 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
-import com.google.android.gcm.server.Message;
-import com.google.android.gcm.server.Notification;
-import com.google.android.gcm.server.Result;
-import com.google.android.gcm.server.Sender;
-import com.google.gson.Gson;
-import com.med.asl.ws.bean.ChatroomBean;
-import com.med.asl.ws.bean.MemberBean;
+import com.med.asl.ws.beans.ChatroomBean;
+import com.med.asl.ws.beans.MemberBean;
 import com.med.common.contants.ConfigMapHelper;
 import com.med.common.contants.Constants;
 import com.med.common.contants.ErrorConstants;
-import com.med.common.contants.NotificationTypeConstants;
 import com.med.common.exception.MEDException;
 import com.med.ods.dao.NotiPersonSubscrDAO;
 import com.med.ods.dao.NotiSubscrPersonDAO;
@@ -32,18 +24,13 @@ import com.med.ods.dao.PersLoginDeviceDAO;
 import com.med.ods.dao.PersonDAO;
 import com.med.ods.entity.NotiPersonSubscr;
 import com.med.ods.entity.NotiPersonSubscrId;
-import com.med.ods.entity.NotiPool;
 import com.med.ods.entity.NotiSubscrPerson;
 import com.med.ods.entity.NotiSubscrPersonId;
 import com.med.ods.entity.NotiSubscrTbl;
 import com.med.ods.entity.PersLoginDevice;
 import com.med.ods.entity.Person;
 import com.med.ods.entity.PersonCurrent;
-import com.med.ws.beans.ChatMsgBean;
-import com.med.ws.beans.NotificationDataParamBean;
-import com.med.ws.beans.ChatMsgBean.SenderDetail;
 import com.med.ws.controller.workflow.master.ProcessBean;
-import com.med.ws.dto.type.rq.ChatMessageRqType;
 
 @Service
 @Transactional
@@ -59,7 +46,7 @@ public class ChatService {
 	@Autowired
 	PersLoginDeviceDAO loginDeviceDAO;
 	@Autowired 
-	BroadcastService broadcastService;
+	TalkService talkService;
 	@Autowired
 	ResearchService researchService;
 	@Autowired
@@ -69,12 +56,11 @@ public class ChatService {
 	@Autowired
 	NotificationService notificationService;
 	@Autowired
-	FirebaseCloudMessagingService firebaseCloudMessagingService;
-	@Autowired
 	ImageService imageService;
 	@Autowired
 	PersonalService personalService;
-	
+	@Autowired
+	AccountService accountService;
 	/**
 	 * Create Chatroom
 	 * @author Wathunyu.y
@@ -163,7 +149,7 @@ public class ChatService {
 					b.setSubscrId(tbl.getSubscrId());
 					b.setSubscrName(tbl.getSubscrName());
 					b.setSubscrDescr(tbl.getSubscrDescr());
-					b.setLastMassage(broadcastService.findLastMassageByChatroom(tbl.getSubscrId()));
+					b.setLastMassage(talkService.findLastMassageByChatroom(tbl.getSubscrId()));
 					rs.add(b);
 				}
 			}
@@ -215,7 +201,7 @@ public class ChatService {
 						b.setSubscrId(tbl.getSubscrId());
 						b.setSubscrName(tbl.getSubscrName());
 						b.setSubscrDescr(tbl.getSubscrDescr());
-						b.setLastMassage(broadcastService.findLastMassageByChatroom(tbl.getSubscrId()));
+						b.setLastMassage(talkService.findLastMassageByChatroom(tbl.getSubscrId()));
 						rs.add(b);
 					}
 				}
@@ -264,16 +250,16 @@ public class ChatService {
 		try{
 			NotiPersonSubscrId npid = new NotiPersonSubscrId(subscrId, persId);
 			notiPersonSubscrDAO.delete(notiPersonSubscrDAO.findByPK(npid));
-			List<PersLoginDevice> dev = loginDeviceDAO.findByPersId(persId);
-			if(null != dev){
-				for(PersLoginDevice d : dev){
-					NotiSubscrPersonId id = new NotiSubscrPersonId(subscrId,d.getPersLoginDevice());
-					NotiSubscrPerson p = subscrPersonDAO.findByPK(id);
-					if(null != p){
-						subscrPersonDAO.delete(p);
-					}
-				}
-			}
+//			List<PersLoginDevice> dev = loginDeviceDAO.findByPersId(persId);
+//			if(null != dev){
+//				for(PersLoginDevice d : dev){
+//					NotiSubscrPersonId id = new NotiSubscrPersonId(subscrId,d.getPersLoginDevice());
+//					NotiSubscrPerson p = subscrPersonDAO.findByPK(id);
+//					if(null != p){
+//						subscrPersonDAO.delete(p);
+//					}
+//				}
+//			}
 		}catch(Exception ex){
 			logger.debug(ex.getMessage(),ex);
 			throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "Chatroom not found for persId:"+ persId);
@@ -312,22 +298,12 @@ public class ChatService {
 	  * accept chat law by pers
 	 * @throws MEDException 
 	  */
-	public void acceptChatLaw(ProcessBean rq) throws MEDException{
+	public void acceptChatLaw(Integer persId) throws MEDException{
 		try{
-			Integer persId = Integer.parseInt(rq.getOprid());
-			PersLoginDevice device = persLoginDeviceDAO.findByRegisTokenAndUser(rq.getRequest().getFcmTokenRqType().getFcmToken(), persId); //findByPersId(persId);
-			device.setAcceptFlag(Constants.MSSQL.LOGIC.TRUE);
-			persLoginDeviceDAO.merge(device);
-			List<NotiSubscrTbl> tbls =  subscrTblDAO.findByPersId(persId);//ดูว่า คนนี้ ติดตามห้องไหนบ้าง
-			String topicFormat = ConfigMapHelper.getConfigValue("CONFIG_CONSTANTS.SUBSCRIBE_CHAT_TOPIC"); 
-			for(NotiSubscrTbl room : tbls){
-				String topic = String.format(topicFormat, room.getSubscrId()); 
-				firebaseCloudMessagingService.userSubscribe(topic, rq.getRequest().getFcmTokenRqType().getFcmToken());
-			}
+			accountService.updateAcceptChatrooLaw(true, persId);
 		}catch(Exception ex){
 			logger.info(ex.getMessage(),ex);
-			throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "device not found for persId:"+ rq.getOprid());
-
+			throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "device not found for persId:"+ persId);
 		}
 	}
 	/**
@@ -335,9 +311,9 @@ public class ChatService {
 	 * @throws MEDException 
 	 * 
 	 */
-	public Boolean checkAcceptChatLaw(Integer persId ,String token) throws MEDException{
+	public Boolean checkAcceptChatLaw(Integer persId ) throws MEDException{
 		try{
-			return persLoginDeviceDAO.findByRegisTokenAndUser(token, persId).getAcceptFlag() == Constants.MSSQL.LOGIC.TRUE ? true :false;
+			return accountService.getAcceptChatrooLaw(persId);
 		}catch(Exception ex){
 			throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "device not found for persId:"+ persId);
 		}

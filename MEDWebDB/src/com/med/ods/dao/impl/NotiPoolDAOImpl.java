@@ -90,7 +90,7 @@ public class NotiPoolDAOImpl extends GenericDAOImpl<NotiPool, Integer> implement
 		String hql;
 		if(null == lastMassageDate)
 			hql = ConfigMapHelper.getConfigValue("SQL_CONSTANTS.FIND_NOTI_CHAT_POOL_BY_TOPIC");
-		else hql = ConfigMapHelper.getConfigValue("SQL_CONSTANTS.FIND_NOTI_CHAT_POOL_BY_TOPIC_AND_LAST_MASSAGE_DATE");
+		else hql = ConfigMapHelper.getConfigValue("SQL_CONSTANTS.FIND_NOTI_CHAT_POOL_BY_TOPIC_AND_LAST_MASSAGE_DATE"); //FIXME แก้แล้ว
 		Query qr = entityManager.createQuery(hql);
 		qr.setParameter("topic", topic);
 		if(null != lastMassageDate)
@@ -107,7 +107,7 @@ public class NotiPoolDAOImpl extends GenericDAOImpl<NotiPool, Integer> implement
 	@Override
 	public NotiPool findLastChatByTopic(String topic) {
 		List<NotiPool> result = new ArrayList<>();
-		String hql = ConfigMapHelper.getConfigValue("SQL_CONSTANTS.FIND_LAST_NOTI_CHAT_POOL_BY_TOPIC");
+		String hql = ConfigMapHelper.getConfigValue("SQL_CONSTANTS.FIND_LAST_NOTI_CHAT_POOL_BY_TOPIC"); //แก้แล้ว
 		Query qr = entityManager.createQuery(hql);
 		qr.setParameter("topic", topic);
 		try{

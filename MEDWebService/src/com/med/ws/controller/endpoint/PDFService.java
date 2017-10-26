@@ -29,7 +29,7 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.tool.xml.XMLWorkerFontProvider;
 import com.itextpdf.tool.xml.XMLWorkerHelper;
-import com.med.asl.ws.bean.ResearchBean;
+import com.med.asl.ws.beans.ResearchBean;
 import com.med.common.contants.ConfigMapHelper;
 import com.med.common.contants.Constants;
 import com.med.common.exception.MEDException;

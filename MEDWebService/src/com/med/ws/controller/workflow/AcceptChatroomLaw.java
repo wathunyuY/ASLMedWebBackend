@@ -15,7 +15,7 @@ public class AcceptChatroomLaw extends AbstractWorkflowController {
 	ChatService service;
 	@Override
 	public ResponseBody processTask(ProcessBean processBean) throws Exception {
-		service.acceptChatLaw(processBean);
+		service.acceptChatLaw(Integer.parseInt(processBean.getOprid()));
 		return null;
 	}
 

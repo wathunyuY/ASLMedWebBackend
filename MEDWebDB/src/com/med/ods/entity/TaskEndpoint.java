@@ -1,13 +1,14 @@
 package com.med.ods.entity;
 // Generated Jun 15, 2017 2:25:14 PM by Hibernate Tools 5.1.0.Alpha1
 
-import java.util.HashSet;
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -31,7 +32,7 @@ public class TaskEndpoint implements java.io.Serializable {
 	private String enptActFlag;
 	private String enptWfFlag;
 	private Boolean enptTxnLog;
-	private Set<PermsMapPermsEndpoint> permsMapPermsEndpoints = new HashSet<PermsMapPermsEndpoint>(0);
+//	private Set<PermsMapPermsEndpoint> permsMapPermsEndpoints = new HashSet<PermsMapPermsEndpoint>(0);
 
 	public TaskEndpoint() {
 	}
@@ -46,8 +47,8 @@ public class TaskEndpoint implements java.io.Serializable {
 	}
 
 	public TaskEndpoint(TaskServiceTbl taskServiceTbl, String enptHttpmethod, String enptZone, String enptName,
-			String enptPathVariableFlag, String enptType, String enptActFlag, String enptWfFlag, Boolean enptTxnLog,
-			Set<PermsMapPermsEndpoint> permsMapPermsEndpoints) {
+			String enptPathVariableFlag, String enptType, String enptActFlag, String enptWfFlag, Boolean enptTxnLog
+			/*Set<PermsMapPermsEndpoint> permsMapPermsEndpoints*/) {
 		this.taskServiceTbl = taskServiceTbl;
 		this.enptHttpmethod = enptHttpmethod;
 		this.enptZone = enptZone;
@@ -57,7 +58,7 @@ public class TaskEndpoint implements java.io.Serializable {
 		this.enptActFlag = enptActFlag;
 		this.enptWfFlag = enptWfFlag;
 		this.enptTxnLog = enptTxnLog;
-		this.permsMapPermsEndpoints = permsMapPermsEndpoints;
+//		this.permsMapPermsEndpoints = permsMapPermsEndpoints;
 	}
 
 	@Id
@@ -154,13 +155,13 @@ public class TaskEndpoint implements java.io.Serializable {
 		this.enptTxnLog = enptTxnLog;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "taskEndpoint")
-	public Set<PermsMapPermsEndpoint> getPermsMapPermsEndpoints() {
-		return this.permsMapPermsEndpoints;
-	}
-
-	public void setPermsMapPermsEndpoints(Set<PermsMapPermsEndpoint> permsMapPermsEndpoints) {
-		this.permsMapPermsEndpoints = permsMapPermsEndpoints;
-	}
+//	@OneToMany(fetch = FetchType.LAZY, mappedBy = "taskEndpoint")
+//	public Set<PermsMapPermsEndpoint> getPermsMapPermsEndpoints() {
+//		return this.permsMapPermsEndpoints;
+//	}
+//
+//	public void setPermsMapPermsEndpoints(Set<PermsMapPermsEndpoint> permsMapPermsEndpoints) {
+//		this.permsMapPermsEndpoints = permsMapPermsEndpoints;
+//	}
 
 }

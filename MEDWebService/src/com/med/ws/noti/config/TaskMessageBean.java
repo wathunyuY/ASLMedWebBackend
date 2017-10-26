@@ -2,8 +2,8 @@ package com.med.ws.noti.config;
 
 import java.util.Date;
 
+import com.med.asl.ws.beans.TaskBean;
 import com.med.common.contants.NotificationTypeConstants;
-import com.med.ws.beans.TaskBean;
 
 public class TaskMessageBean extends AbstractMessage{
 	public TaskMessageBean(Integer id, Integer owner, Date created, NotificationTypeConstants type) {

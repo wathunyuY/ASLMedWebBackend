@@ -27,6 +27,7 @@ import com.google.android.gcm.server.Notification;
 import com.google.android.gcm.server.Result;
 import com.google.android.gcm.server.Sender;
 import com.google.gson.Gson;
+import com.med.asl.ws.beans.NotificationDataParamBean;
 import com.med.common.contants.Constants;
 import com.med.common.contants.ErrorConstants;
 import com.med.common.contants.NotificationTypeConstants;
@@ -48,8 +49,7 @@ import com.med.ods.entity.NotiPool;
 import com.med.ods.entity.NotiSubscrTbl;
 import com.med.ods.entity.PersLoginDevice;
 import com.med.ods.entity.Person;
-import com.med.ws.beans.NotificationDataParamBean;
-import com.med.ws.dto.type.rs.NotificationLogType;
+import com.med.ws.dto.rs.NotificationLogType;
 import com.med.ws.noti.config.TaskMessageBean;
 
 @Service
@@ -58,8 +58,6 @@ public class NotificationService {
 
 //	@Autowired
 //	TransTaskDAO transTaskDAO;
-	@Autowired
-	FirebaseCloudMessagingService fcmService;
 	@Autowired
 	PersonDAO personDAO;
 	@Autowired

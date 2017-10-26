@@ -22,7 +22,7 @@ public class NotiSubscrPersonDAOImpl extends GenericDAOImpl<NotiSubscrPerson, No
 	@Override
 	public List<Person> findPersonBySubscrId(Integer subscrId) {
 		List<Person> result = new ArrayList<>();
-		String hql = ConfigMapHelper.getConfigValue("SQL_CONSTANTS.FIND_DISTINCT_PERSON_BY_SUBSCR_ID");
+		String hql = ConfigMapHelper.getConfigValue("SQL_CONSTANTS.FIND_DISTINCT_PERSON_BY_SUBSCR_ID"); //แก้แล้ว
 		logger.info(hql);
 		Query qr = entityManager.createQuery(hql);
 		try{

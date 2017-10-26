@@ -11,15 +11,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.med.asl.ws.bean.MemberBean;
+import com.med.asl.ws.beans.MemberBean;
 import com.med.common.contants.ErrorConstants;
 import com.med.common.exception.MEDException;
 import com.med.ods.dao.PersonCurrentDAO;
 import com.med.ods.dao.PersonDAO;
 import com.med.ods.entity.Person;
 import com.med.ods.entity.PersonCurrent;
-import com.med.ws.dto.type.rq.LoginRqType;
-import com.med.ws.dto.type.rs.LoginRsType;
+import com.med.ws.dto.rq.LoginRqType;
+import com.med.ws.dto.rs.LoginRsType;
 
 @Service
 @Transactional

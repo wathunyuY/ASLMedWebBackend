@@ -16,7 +16,7 @@ public class CheckAcceptChatroomLaw extends AbstractWorkflowController {
 	@Override
 	public ResponseBody processTask(ProcessBean processBean) throws Exception {
 		ResponseBody rs = new ResponseBody();
-		Boolean acc = service.checkAcceptChatLaw(Integer.parseInt(processBean.getOprid()), processBean.getRequest().getFcmTokenRqType().getFcmToken());
+		Boolean acc = service.checkAcceptChatLaw(Integer.parseInt(processBean.getOprid()));
 		rs.setIsAcceptChatroomLaw(acc);
 		return rs;
 	}

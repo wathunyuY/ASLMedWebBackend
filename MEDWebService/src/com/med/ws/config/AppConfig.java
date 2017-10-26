@@ -12,6 +12,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -82,18 +83,42 @@ public class AppConfig extends WebMvcConfigurerAdapter implements ApplicationCon
 
 		return em;
 	}
+	
+	@Bean
+	public LocalContainerEntityManagerFactoryBean aslEntityManagerFactory() throws DataSourceLookupFailureException, IOException {
+		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+		em.setDataSource(this.dataSourceALSView());
+		em.setPackagesToScan(new String[] { "com.med.ots" });
+		em.setPersistenceUnitName("medAslJPAUnit");
+
+		JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+		em.setJpaVendorAdapter(vendorAdapter);
+		em.setJpaProperties(additionalProperties());
+
+		return em;
+	}
 
 	@Bean
+	@Primary
 	public DataSource dataSource() throws DataSourceLookupFailureException, IOException {
 		final JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
 		dsLookup.setResourceRef(true);
 		String env = System.getProperty("application.environment");
 //		DataSource dataSource = dsLookup.getDataSource(System.getProperty("application.datasource.name." + env));
 		DataSource ds = dsLookup.getDataSource("java:jboss/datasources/MsSqlDS");
-		System.out.println(ds + "-*-*-*-*-*-*");
-//		System.out.println(dataSource + "9-9-9-9-");
 		return ds;
 	}
+	
+	@Bean
+	public DataSource dataSourceALSView() throws DataSourceLookupFailureException, IOException {
+		final JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
+		dsLookup.setResourceRef(true);
+		String env = System.getProperty("application.environment");
+//		DataSource dataSource = dsLookup.getDataSource(System.getProperty("application.datasource.name." + env));
+		DataSource ds = dsLookup.getDataSource("java:jboss/datasources/MsSqlDS");
+		return ds;
+	}
+	
 
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {

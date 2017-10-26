@@ -44,7 +44,7 @@ public class PersonDAOImpl extends GenericDAOImpl<Person, Integer> implements Pe
 
 	@Override
 	public List<PersonCurrent> findStdntByKey(String key) throws MEDException {
-		String hql = ConfigMapHelper.getConfigValue("SQL_CONSTANTS.GET_STDNT_BY_KEY");
+		String hql = ConfigMapHelper.getConfigValue("SQL_CONSTANTS.GET_PERS_BY_KEY"); //แก้แล้ว
 		Query qr = entityManager.createQuery(hql);
 		qr.setParameter("name","%"+key + "%");
 		List<PersonCurrent> result = new ArrayList<PersonCurrent>();

@@ -30,12 +30,12 @@ public class PersAccount implements java.io.Serializable {
 	private String username;
 	private String password;
 	private String salt;
-	private Boolean typeStdnt;
+	private Boolean chatAccept;
 	private Boolean typeEmp;
 	private String empFow;
 	private Date lastUpdDttm;
 	private Integer lastUpdOprid;
-	private Set<PermsPersGroup> permsPersGroups = new HashSet<PermsPersGroup>(0);
+//	private Set<PermsPersGroup> permsPersGroups = new HashSet<PermsPersGroup>(0);
 
 	public PersAccount() {
 	}
@@ -44,18 +44,18 @@ public class PersAccount implements java.io.Serializable {
 		this.person = person;
 	}
 
-	public PersAccount(Person person, String username, String password, String salt, Boolean typeStdnt, Boolean typeEmp,
-			String empFow, Date lastUpdDttm, Integer lastUpdOprid, Set<PermsPersGroup> permsPersGroups) {
+	public PersAccount(Person person, String username, String password, String salt, Boolean chatAccept, Boolean typeEmp,
+			String empFow, Date lastUpdDttm, Integer lastUpdOprid/*, Set<PermsPersGroup> permsPersGroups*/) {
 		this.person = person;
 		this.username = username;
 		this.password = password;
 		this.salt = salt;
-		this.typeStdnt = typeStdnt;
+		this.chatAccept = chatAccept;
 		this.typeEmp = typeEmp;
 		this.empFow = empFow;
 		this.lastUpdDttm = lastUpdDttm;
 		this.lastUpdOprid = lastUpdOprid;
-		this.permsPersGroups = permsPersGroups;
+//		this.permsPersGroups = permsPersGroups;
 	}
 
 	@GenericGenerator(name = "generator", strategy = "foreign", parameters = @Parameter(name = "property", value = "person"))
@@ -108,13 +108,13 @@ public class PersAccount implements java.io.Serializable {
 		this.salt = salt;
 	}
 
-	@Column(name = "TYPE_STDNT")
-	public Boolean getTypeStdnt() {
-		return this.typeStdnt;
+	@Column(name = "CHAT_ACCEPT")
+	public Boolean getChatAccept() {
+		return this.chatAccept;
 	}
 
-	public void setTypeStdnt(Boolean typeStdnt) {
-		this.typeStdnt = typeStdnt;
+	public void setChatAccept(Boolean chatAccept) {
+		this.chatAccept = chatAccept;
 	}
 
 	@Column(name = "TYPE_EMP")
@@ -154,13 +154,13 @@ public class PersAccount implements java.io.Serializable {
 		this.lastUpdOprid = lastUpdOprid;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "persAccount")
-	public Set<PermsPersGroup> getPermsPersGroups() {
-		return this.permsPersGroups;
-	}
-
-	public void setPermsPersGroups(Set<PermsPersGroup> permsPersGroups) {
-		this.permsPersGroups = permsPersGroups;
-	}
+//	@OneToMany(fetch = FetchType.LAZY, mappedBy = "persAccount")
+//	public Set<PermsPersGroup> getPermsPersGroups() {
+//		return this.permsPersGroups;
+//	}
+//
+//	public void setPermsPersGroups(Set<PermsPersGroup> permsPersGroups) {
+//		this.permsPersGroups = permsPersGroups;
+//	}
 
 }

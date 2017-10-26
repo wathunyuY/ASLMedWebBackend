@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.med.common.contants.Constants;
-import com.med.ws.dto.type.rs.LoginRsType;
+import com.med.ws.dto.rs.LoginRsType;
 
 @Service
 @Transactional

@@ -39,7 +39,7 @@ public class NotiSubscrTblDAOImpl extends GenericDAOImpl<NotiSubscrTbl, Integer>
 	public List<NotiSubscrTbl> findByPersId(Integer persId) {
 		List<NotiSubscrTbl> result = null;
 		logger.info("test");
-		String hql = ConfigMapHelper.getConfigValue("SQL_CONSTANTS.FIND_ACTIVE_NOTI_SUBSCR_TBL_BY_PERS_ID");
+		String hql = ConfigMapHelper.getConfigValue("SQL_CONSTANTS.FIND_ACTIVE_NOTI_SUBSCR_TBL_BY_PERS_ID"); //แก้แล้ว
 		Query qr = entityManager.createQuery(hql);
 		qr.setParameter("persId", persId);
 		try{

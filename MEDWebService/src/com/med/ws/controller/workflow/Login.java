@@ -16,13 +16,12 @@ import com.med.ods.dao.PersonCurrentDAO;
 import com.med.ods.entity.PersAccount;
 import com.med.ods.entity.PersonCurrent;
 import com.med.ws.controller.service.ASLService;
-import com.med.ws.controller.service.FirebaseCloudMessagingService;
 import com.med.ws.controller.service.PersonalService;
 import com.med.ws.controller.workflow.master.AbstractWorkflowController;
 import com.med.ws.controller.workflow.master.ProcessBean;
 import com.med.ws.dto.response.ResponseBody;
-import com.med.ws.dto.type.rq.LoginRqType;
-import com.med.ws.dto.type.rs.LoginRsType;
+import com.med.ws.dto.rq.LoginRqType;
+import com.med.ws.dto.rs.LoginRsType;
 
 /**
  * @author Thanat
@@ -43,8 +42,6 @@ public class Login extends AbstractWorkflowController {
 	ASLService aslService;
 	@Autowired
 	PersonalService personalService;
-	@Autowired
-	FirebaseCloudMessagingService fcmService;
 	
 	@Override
 	public ResponseBody processTask(ProcessBean processBean) throws Exception {
@@ -58,7 +55,6 @@ public class Login extends AbstractWorkflowController {
 			LoginRsType alsLogin =  aslService.aslLogin(username, password);
 			if(null != alsLogin){
 //				personalService.createPerson(processBean.getRequest().getLoginRq(), alsLogin);
-				fcmService.saveDeviceToken(loginRq.getFcmToken(), account.getPersId());
 				return checkLogin(username, account, processBean);
 			}else{
 				throw new MEDException(ErrorConstants.LOGIN_ERROR);

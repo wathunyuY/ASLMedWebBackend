@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.med.asl.ws.bean.ResearchCategoryBean;
+import com.med.asl.ws.beans.ResearchCategoryBean;
 import com.med.ws.controller.service.ResearchService;
 import com.med.ws.controller.workflow.master.AbstractWorkflowController;
 import com.med.ws.controller.workflow.master.ProcessBean;
