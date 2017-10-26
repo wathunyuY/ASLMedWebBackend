@@ -60,7 +60,7 @@ public class ResearchService {
 				}
 			}
 		}catch(Exception ex){
-			logger.debug(ex.getMessage(),ex);
+			logger.error(ex.getMessage(),ex);
 		}
 		return rs;
 	}
@@ -71,7 +71,7 @@ public class ResearchService {
 			b.setCategoryName(c.getCategoryName());
 			b.setCategoryNameEn(c.getCategoryNameEn());
 		}catch(Exception ex){
-			logger.debug(ex.getMessage(),ex); 
+			logger.error(ex.getMessage(),ex); 
 		}
 		return b;
 	}
@@ -90,7 +90,7 @@ public class ResearchService {
 			c.setCategoryNameEn(rq.getCategoryNameEn());
 			categoryTblDAO.merge(c);
 		}catch(Exception ex){
-			logger.debug(ex.getMessage(),ex);
+			logger.error(ex.getMessage(),ex);
 			throw new MEDException(ErrorConstants.UNKNOW_DATABASE_ERROR);
 
 		}
@@ -105,7 +105,7 @@ public class ResearchService {
 			ResearchCategoryTbl c = categoryTblDAO.findByPK(id);
 			categoryTblDAO.delete(c);
 		}catch(Exception ex){
-			logger.debug(ex.getMessage(),ex);
+			logger.error(ex.getMessage(),ex);
 			throw new MEDException(ErrorConstants.UNKNOW_DATABASE_ERROR);
 
 		}
@@ -126,12 +126,7 @@ public class ResearchService {
 			tbl.setResearchAuthor(rq.getResearchAuthor());
 			tbl.setResearchCategoryTbl(categoryTblDAO.findByPK(rq.getCategoryId()));
 			if(null == tbl.getResearchCreateDate())
-				tbl.setResearchCreateDate(now);
-			
-			ObjectMapper mapper = new ObjectMapper();
-			
-//			byte[] descr = mapper.writeValueAsBytes(rq.getResearchDescr());
-//			byte[] header = mapper.writeValueAsBytes(rq.getResearchHeader());
+				tbl.setResearchCreateDate(now);			
 			tbl.setResearchDescr(rq.getResearchDescr());
 			tbl.setResearchHeader(rq.getResearchHeader());
 			tbl.setResearchName(rq.getResearchName());
@@ -140,7 +135,7 @@ public class ResearchService {
 			if(null != rq.getResearchPicture())
 				tbl.setResearchPicture(this.uploadResearchPic(rq.getResearchPicture(),tbl.getResearchId(), now, oprid));
 		}catch(Exception ex){
-			logger.debug(ex.getMessage(),ex);
+			logger.error(ex.getMessage(),ex);
 			throw new MEDException(ErrorConstants.UNKNOW_DATABASE_ERROR);
 		}
 		
@@ -166,10 +161,6 @@ public class ResearchService {
 			rs.setCategory(this.getCategoryBean(tbl.getResearchCategoryTbl()));
 			rs.setResearchAuthor(tbl.getResearchAuthor());
 			rs.setResearchCreateDate(tbl.getResearchCreateDate());
-			
-			
-//			ObjectMapper mapper = new ObjectMapper();
-//			mapper.configure(Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
 			if(null != tbl.getResearchHeader())
 				rs.setResearchHeader(tbl.getResearchHeader());
 			if(null != tbl.getResearchDescr())
@@ -179,7 +170,7 @@ public class ResearchService {
 			if(null != tbl.getResearchPicture() && !(Constants.SYMBOLIC.STRINGEMPTY.equals(tbl.getResearchPicture())))
 				rs.setResearchPicture(root_path+Constants.SYMBOLIC.SLASH+path + Constants.SYMBOLIC.SLASH + tbl.getResearchPicture());//
 		}catch(Exception ex){
-			logger.debug(ex.getMessage(),ex);
+			logger.error(ex.getMessage(),ex);
 			throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS,"researchId : " + id);
 		}
 		return rs;
@@ -194,7 +185,7 @@ public class ResearchService {
 			ResearchTbl c = researchTblDAO.findByPK(id);
 			researchTblDAO.delete(c);
 		}catch(Exception ex){
-			logger.debug(ex.getMessage(),ex);
+			logger.error(ex.getMessage(),ex);
 			throw new MEDException(ErrorConstants.UNKNOW_DATABASE_ERROR);
 
 		}
@@ -202,14 +193,16 @@ public class ResearchService {
 	
 	/**
 	 * Get RESEARCH_AUTHOR
+	 * @throws MEDException 
 	 */
-	public ResearchFilterBean getResearchFilter(){
+	public ResearchFilterBean getResearchFilter() throws MEDException{
 		ResearchFilterBean rs = new ResearchFilterBean();
 		try{
 			rs.setAuthor(researchTblDAO.findDistinctField("researchAuthor"));
 			rs.setSymbol(researchTblDAO.findDistinctField("researchSybol"));
 		}catch(Exception ex){
-			logger.debug(ex.getMessage(),ex);
+			logger.error(ex.getMessage(),ex);
+			throw new MEDException(ErrorConstants.UNKNOW_DATABASE_ERROR);
 		}
 		return rs;
 	}
@@ -235,7 +228,7 @@ public class ResearchService {
 				}
 			}
 		}catch(Exception ex){
-			logger.debug(ex.getMessage(),ex);
+			logger.error(ex.getMessage(),ex);
 			throw new MEDException(ErrorConstants.UNKNOW_DATABASE_ERROR);
 		}
 		return res;

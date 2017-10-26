@@ -55,9 +55,6 @@ import com.med.ws.noti.config.TaskMessageBean;
 @Service
 @Transactional
 public class NotificationService {
-
-//	@Autowired
-//	TransTaskDAO transTaskDAO;
 	@Autowired
 	PersonDAO personDAO;
 	@Autowired
@@ -112,10 +109,6 @@ public class NotificationService {
 	}
 
 	public void readNotification(String nid, Integer oprid) throws MEDException {
-		// NotificationEntity noti = notiRepository.findOne(nid);
-		// noti.setRead(true);
-		// noti.setLastUpdDttm(Calendar.getInstance().getTime());
-		// notiRepository.save(noti);
 		Integer notiid = Integer.parseInt(nid);
 		NotiLog noti = notiLogDAO.findByPK(new NotiLogId(oprid, notiid));
 		noti.setRead(true);

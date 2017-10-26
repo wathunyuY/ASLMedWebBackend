@@ -54,7 +54,7 @@ public class PersonalService {
 				}
 			}
 		}catch(Exception ex){
-			logger.info(ex.getMessage(),ex);
+			logger.error(ex.getMessage(),ex);
 			throw new MEDException(ErrorConstants.UNKNOW_DATABASE_ERROR);
 
 		}
@@ -76,7 +76,7 @@ public class PersonalService {
 				b.setFullName(p.getPrefix() + p.getFirstName() + " " +p.getLastName());
 			}
 		}catch(Exception ex){
-			logger.info(ex.getMessage(),ex);
+			logger.error(ex.getMessage(),ex);
 			throw new MEDException(ErrorConstants.UNKNOW_DATABASE_ERROR);
 
 		}

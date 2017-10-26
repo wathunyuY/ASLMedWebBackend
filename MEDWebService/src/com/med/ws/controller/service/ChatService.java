@@ -91,7 +91,7 @@ public class ChatService {
 				}
 			}
 		}catch(Exception ex){
-			logger.debug(ex.getMessage() ,ex);
+			logger.error(ex.getMessage() ,ex);
 			throw new MEDException(ErrorConstants.UNKNOW_DATABASE_ERROR);
 		}
 	}
@@ -108,7 +108,7 @@ public class ChatService {
 				subscrPersonDAO.delete(p);
 			subscrTblDAO.delete(tbl);
 		}catch(Exception ex){
-			logger.debug(ex.getMessage(),ex);
+			logger.error(ex.getMessage(),ex);
 			throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "room id : "+subscrId);
 		}
 	}
@@ -154,7 +154,7 @@ public class ChatService {
 				}
 			}
 		}catch(Exception ex){
-			logger.debug(ex.getMessage(),ex);
+			logger.error(ex.getMessage(),ex);
 			throw new MEDException(ErrorConstants.UNKNOW_ERROR);
 		}
 		return rs;
@@ -177,7 +177,7 @@ public class ChatService {
 			b.setSubscrDescr(tbl.getSubscrDescr());
 			return b;
 		}catch(Exception ex){
-			logger.info(ex.getMessage(),ex);
+			logger.error(ex.getMessage(),ex);
 			throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "room id : "+subscrId);
 		}
 	}
@@ -208,7 +208,7 @@ public class ChatService {
 			}
 			return rs;
 		}catch(Exception ex){
-			logger.info(ex.getMessage(),ex);
+			logger.error(ex.getMessage(),ex);
 			throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "Chatroom not found for id:"+ persId);
 		}
 	}
@@ -235,7 +235,7 @@ public class ChatService {
 				tbl.setStatus("sub");
 				notiPersonSubscrDAO.merge(tbl);
 			}catch(Exception ex){
-				logger.debug(ex.getMessage(),ex);
+				logger.error(ex.getMessage(),ex);
 			}
 		}
 		return 0;
@@ -250,18 +250,8 @@ public class ChatService {
 		try{
 			NotiPersonSubscrId npid = new NotiPersonSubscrId(subscrId, persId);
 			notiPersonSubscrDAO.delete(notiPersonSubscrDAO.findByPK(npid));
-//			List<PersLoginDevice> dev = loginDeviceDAO.findByPersId(persId);
-//			if(null != dev){
-//				for(PersLoginDevice d : dev){
-//					NotiSubscrPersonId id = new NotiSubscrPersonId(subscrId,d.getPersLoginDevice());
-//					NotiSubscrPerson p = subscrPersonDAO.findByPK(id);
-//					if(null != p){
-//						subscrPersonDAO.delete(p);
-//					}
-//				}
-//			}
 		}catch(Exception ex){
-			logger.debug(ex.getMessage(),ex);
+			logger.error(ex.getMessage(),ex);
 			throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "Chatroom not found for persId:"+ persId);
 		}
 		
@@ -272,14 +262,12 @@ public class ChatService {
 	 * @author Wathunyu.y
 	 * @param subscrId
 	 * @return 
+	 * @throws MEDException 
 	 */
-	public List<MemberBean> getMembersByChatroom(Integer subscrId){
+	public List<MemberBean> getMembersByChatroom(Integer subscrId) throws MEDException{
 		List<MemberBean> rs = new ArrayList<>();
 		try{
 			List<Person> members = notiPersonSubscrDAO.findPersonBySubscrId(subscrId);
-//			List<Person> members = subscrPersonDAO.findPersonBySubscrId(subscrId);
-//			Collection<NotiPersonSubscr> members = subscrTblDAO.findByPK(subscrId).getNotiPersonSubscrs();
-			logger.info(members.size());
 			if(null != members){
 				for(Person m : members){
 					MemberBean b= new MemberBean();
@@ -290,7 +278,8 @@ public class ChatService {
 				}
 			}
 		}catch(Exception ex){
-			logger.info(ex.getMessage(),ex);
+			logger.error(ex.getMessage(),ex);
+			throw new MEDException(ErrorConstants.UNKNOW_DATABASE_ERROR);
 		}
 		return rs;
 	}
@@ -302,7 +291,7 @@ public class ChatService {
 		try{
 			accountService.updateAcceptChatrooLaw(true, persId);
 		}catch(Exception ex){
-			logger.info(ex.getMessage(),ex);
+			logger.error(ex.getMessage(),ex);
 			throw new MEDException(ErrorConstants.OBJECT_NOT_FOUND_PARAMS, "device not found for persId:"+ persId);
 		}
 	}

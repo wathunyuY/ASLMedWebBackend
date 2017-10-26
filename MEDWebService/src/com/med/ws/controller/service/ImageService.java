@@ -27,17 +27,6 @@ import com.med.common.contants.ConfigMapHelper;
 @Transactional
 public class ImageService {
 	public static Logger logger = LogManager.getLogger(ImageService.class);
-
-//	@Autowired
-//	StdntInfoDAO stdntInfoDAO;
-//	
-//	@Autowired
-//	EmpInfoDAO empInfoDAO;
-//	
-//	@Autowired
-//	PersPictureDAO persPictureDAO;
-	
-//	private String root_dir = ConfigMapHelper.getConfigValue("CONFIG_CONSTANTS.WINDOW_IMAGE_ROOT_DIRECTORY");
 	private String root_dir = ConfigMapHelper.getConfigValue("CONFIG_CONSTANTS.IMAGE_ROOT_DIRECTORY");
 	
 	/**
